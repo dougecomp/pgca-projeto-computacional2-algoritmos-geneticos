@@ -5,6 +5,8 @@
  */
 package com.uefs.mestrado.exercicio.computacional2;
 
+import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRPSimples;
+
 /**
  *
  * @author douglas
@@ -12,7 +14,14 @@ package com.uefs.mestrado.exercicio.computacional2;
 public class ExercicioComputacional2 {
     
     public static void main(String[] args) {
+        int tamanhoPopulacao = 100;
+        int tamanhoCromossomo = 20;
+        int quantidadeGeracoes = 50;
+        float taxaCruzamento = 0.7f;
+        float taxaMutacao = 0.1f;
         
+        VRPSimples algoritmo = new VRPSimples(tamanhoPopulacao, tamanhoCromossomo, quantidadeGeracoes, taxaCruzamento, taxaMutacao);
+        algoritmo.executar();
     }
     
 }
