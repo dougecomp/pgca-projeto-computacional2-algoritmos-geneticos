@@ -12,11 +12,11 @@ import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRPSimples;
  * @author douglas
  */
 public class ExercicioComputacional2 {
-    
+       
     public static void main(String[] args) {
         int tamanhoPopulacao = 100;
-        int tamanhoCromossomo = 20;
-        int quantidadeGeracoes = 50;
+        int tamanhoCromossomo = 20; // Quantidade de veículos
+        int quantidadeGeracoes = 50; // Critério de parada
         
         // Coordenadas do depósito
         int xInicio = 100;

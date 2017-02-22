@@ -6,6 +6,10 @@
 package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 
 import com.uefs.mestrado.exercicio.computacional2.Ponto;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 import org.jfree.data.xy.XYSeries;
@@ -20,9 +24,10 @@ public class VRPSimples {
     private float taxaMutacao;
     private float taxaCruzamento;
     private int qtdGeracoes;
-    private final XYSeries pontos;
+    private final XYSeries dados;
     private final Random rand;
     private final Ponto inicio;
+    private final ArrayList<Ponto> clientes;
     
     public VRPSimples(int tamPop, int tamCromo, int xInicio, int yInicio, int qtdGer, float txCruz, float txMut) {
         
@@ -31,7 +36,17 @@ public class VRPSimples {
         taxaMutacao = txMut;
         qtdGeracoes = qtdGer;
         inicio = new Ponto(xInicio, yInicio);
-        pontos = new XYSeries("Melhor Indivíduo");
+
+        ArrayList<Ponto> tmp = null;
+        try {
+            tmp = getCoordenadasClientes("clientes.txt", ";");
+        } catch(IOException e) {
+            System.out.println("Não foi possível ler arquivo com as coordenadas dos clientes.");
+            System.exit(0);
+        }
+
+        clientes = tmp;
+        dados = new XYSeries("Melhor Indivíduo");
         rand = new Random();
         
     }
@@ -53,7 +68,7 @@ public class VRPSimples {
 
             cortar();
 
-            pontos.add(geracoes, populacao.getIndividuos().get(0).calcularFitness());
+            dados.add(geracoes, populacao.getIndividuos().get(0).calcularFitness());
             geracoes++;
         
         }
@@ -183,6 +198,32 @@ public class VRPSimples {
 
         return populacao.getIndividuos().get(0);
 
+    }
+    
+    private ArrayList<Ponto> getCoordenadasClientes(String filename, String separator) throws IOException {
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+
+        ArrayList<Ponto> pontos = new ArrayList<>();
+                
+        String line = reader.readLine();
+        while(line!=null){
+            int x;
+            int y;
+            String[] partes = line.split(separator);
+            
+            x = Integer.parseInt(partes[0]);
+            
+            y = Integer.parseInt(partes[1]);
+
+            pontos.add(new Ponto(x, y));
+            
+            line = reader.readLine();
+        }   
+        reader.close();
+        
+        return pontos;
+        
     }
 
     public Populacao getPopulacao() {
