@@ -5,6 +5,7 @@
  */
 package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 
+import com.uefs.mestrado.exercicio.computacional2.Ponto;
 import java.util.ArrayList;
 import java.util.Random;
 import org.jfree.data.xy.XYSeries;
@@ -21,13 +22,15 @@ public class VRPSimples {
     private int qtdGeracoes;
     private final XYSeries pontos;
     private final Random rand;
+    private final Ponto inicio;
     
-    public VRPSimples(int tamPop, int tamCromo, int qtdGer, float txCruz, float txMut) {
+    public VRPSimples(int tamPop, int tamCromo, int xInicio, int yInicio, int qtdGer, float txCruz, float txMut) {
         
-        //populacao = new Populacao(tamPop, tamCromo);
+        populacao = new Populacao(tamPop, tamCromo);
         taxaCruzamento = txCruz;
         taxaMutacao = txMut;
         qtdGeracoes = qtdGer;
+        inicio = new Ponto(xInicio, yInicio);
         pontos = new XYSeries("Melhor Indivíduo");
         rand = new Random();
         
@@ -35,33 +38,28 @@ public class VRPSimples {
     
     public void executar() {
         
-        /*populacao.iniciarPopulacao();
-        converterFitnessBinarioParaDecimal();
-        calcularFitness();
+        populacao.iniciarPopulacao();
 
         int geracoes = 0;
         while(geracoes < qtdGeracoes){
 
             ArrayList<Cromossomo> cromossomosSelecionados = selecionarCromossomosPorRoleta(
-                            populacao, populacao.getIndividuos().size());
+            populacao, populacao.getIndividuos().size());
             ArrayList<Cromossomo> resultCruzamento = cruzamentoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
             ArrayList<Cromossomo> resultMutacao = mutacaoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
 
             populacao.getIndividuos().addAll(resultCruzamento);
             populacao.getIndividuos().addAll(resultMutacao);
 
-            converterFitnessBinarioParaDecimal();
-            calcularFitness();
             cortar();
 
-            pontos.add(geracoes, populacao.getCromossomo(0).getValorCromossomo());
+            pontos.add(geracoes, populacao.getIndividuos().get(0).calcularFitness());
             geracoes++;
         
         }
 
-        plotaGrafico();
-        String s = "Melhor resultado obtido foi: " + getMelhorResultado().getValorCromossomo() + "\n"
-                        + "Valor de Aptidão: " + getMelhorResultado().getFitness();
+        /*plotaGrafico();
+        String s = "Melhor resultado obtido foi com custo igual a: " + getMelhorResultado().calcularFitness();
 
         JOptionPane.showMessageDialog(null, s);*/
         
@@ -73,17 +71,17 @@ public class VRPSimples {
     * @param cromossomosSelecionados
     * @return
     */
-    public ArrayList<Cromossomo> mutacaoUmPonto(ArrayList<Cromossomo> cromossomosSelecionados){
+    public ArrayList<Cromossomo> mutacaoUmPonto(ArrayList<Cromossomo> cromossomosSelecionados) {
 
         ArrayList<Cromossomo> resultMutacao = new ArrayList<Cromossomo>();
 
         for(int i = 0; i < cromossomosSelecionados.size(); i++){
             int ponto = rand.nextInt(cromossomosSelecionados.size() - 1);
             Cromossomo individuo = cromossomosSelecionados.get(ponto);
-            //int gene = rand.nextInt(individuo.getTamanho() - 1);
+            int gene = rand.nextInt(individuo.getTamanho() - 1);
 
             if(rand.nextFloat() < taxaMutacao){
-                //individuo.aplicarMutacao();
+                individuo.aplicarMutacao();
             }
             resultMutacao.add(individuo);
         }
@@ -107,11 +105,11 @@ public class VRPSimples {
             Cromossomo pai = cromossomosSelecionados.get(rand.nextInt(cromossomosSelecionados.size() - 1));
             Cromossomo mae = cromossomosSelecionados.get(rand.nextInt(cromossomosSelecionados.size() - 1));
 
-            /*Cromossomo filho1 = new Cromossomo(pai.getGenes().size());
+            Cromossomo filho1 = new Cromossomo(pai.getGenes().size());
             Cromossomo filho2 = new Cromossomo(mae.getGenes().size());
 
             ponto = rand.nextInt(pai.getTamanho()-1);
-            if(rand.nextFloat() < taxaCruzamento){
+            if(rand.nextFloat() < taxaCruzamento) {
                 for (int i = 0; i < pai.getGenes().size(); i++) {
                     if (i < ponto) {
                             filho1.getGenes().add(i, pai.getGenes().get(i));
@@ -124,7 +122,7 @@ public class VRPSimples {
                 filhos.add(filho1);
                 filhos.add(filho2);
             }
-            cont++;*/
+            cont++;
         }
         return filhos;
 
@@ -143,23 +141,48 @@ public class VRPSimples {
         double sumParcial = 0;
         int cont = 0;
 
-        /*for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
-            sum += populacao.getCromossomo(i).getFitness() + 1;
+        for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
+            sum += populacao.getIndividuos().get(i).calcularFitness() /*+ 1*/;
         }
 
         while (cont < qtdSele) {
             int numAleatorio = rand.nextInt( (int)sum);
             for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
-                sumParcial += populacao.getCromossomo(i).getFitness() + 1;
+                sumParcial += populacao.getIndividuos().get(i).calcularFitness()/* + 1*/;
                 if (sumParcial >= numAleatorio) {
-                    cromossomosSelecionados.add(populacao.getCromossomo(i));
+                    cromossomosSelecionados.add(populacao.getIndividuos().get(i));
                     break;
                 }
             }
             cont++;
-         }*/
+         }
 
         return cromossomosSelecionados;
+    }
+    
+    /**
+     * Retirar os individuos com os menores valores de fitness
+     */
+    public void cortar() {
+        populacao.ordenarPorFitness();
+
+        for (int i = populacao.getIndividuos().size() - 1; i >= populacao.getTamanhoPopulacao(); i--) {
+            populacao.getIndividuos().remove(i);
+        }
+    }
+
+    /**
+     * Retorna o indivíduo com melhor fitness, ou seja, a melhor solucao
+     * encontrada para uma execução do algoritmo genético
+     *
+     * @return
+     */
+    public Cromossomo getMelhorResultado() {
+
+        populacao.ordenarPorFitness();
+
+        return populacao.getIndividuos().get(0);
+
     }
 
     public Populacao getPopulacao() {

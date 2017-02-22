@@ -17,10 +17,15 @@ public class ExercicioComputacional2 {
         int tamanhoPopulacao = 100;
         int tamanhoCromossomo = 20;
         int quantidadeGeracoes = 50;
+        
+        // Coordenadas do depósito
+        int xInicio = 100;
+        int yInicio = 100;
+        
         float taxaCruzamento = 0.7f;
         float taxaMutacao = 0.1f;
         
-        VRPSimples algoritmo = new VRPSimples(tamanhoPopulacao, tamanhoCromossomo, quantidadeGeracoes, taxaCruzamento, taxaMutacao);
+        VRPSimples algoritmo = new VRPSimples(tamanhoPopulacao, tamanhoCromossomo, xInicio, yInicio, quantidadeGeracoes, taxaCruzamento, taxaMutacao);
         algoritmo.executar();
     }
     
