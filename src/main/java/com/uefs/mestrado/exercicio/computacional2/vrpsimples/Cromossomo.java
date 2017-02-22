@@ -38,9 +38,15 @@ public class Cromossomo {
     }
     
     public void inicializarGenes() {
-        
+        for (int i = 0; i < tamanho; i++) {
+            genes.get(i).inicializarValores();
+        }
     }
     
+    /**
+     * A mutação não pode alterar nem a primeira
+     * nem a última coordenada (início e fim sempre no depósito) 
+     */
     public void aplicarMutacao() {
         
     }

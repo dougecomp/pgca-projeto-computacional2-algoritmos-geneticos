@@ -37,4 +37,8 @@ public class Gene {
         
     }
     
+    public void inicializarValores() {
+        
+    }
+    
 }

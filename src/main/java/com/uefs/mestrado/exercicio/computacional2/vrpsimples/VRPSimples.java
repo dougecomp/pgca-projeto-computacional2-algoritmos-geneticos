@@ -28,6 +28,7 @@ public class VRPSimples {
     private final Random rand;
     private final Ponto inicio;
     private final ArrayList<Ponto> clientes;
+    private ArrayList<Ponto> clientesNaoUtilizados;
     
     public VRPSimples(int tamPop, int tamCromo, int xInicio, int yInicio, int qtdGer, float txCruz, float txMut) {
         
@@ -45,7 +46,9 @@ public class VRPSimples {
             System.exit(0);
         }
 
-        clientes = tmp;
+        clientes = (ArrayList<Ponto>) tmp.clone();
+        clientesNaoUtilizados = (ArrayList<Ponto>) tmp.clone();
+        
         dados = new XYSeries("Melhor Indivíduo");
         rand = new Random();
         
@@ -82,7 +85,7 @@ public class VRPSimples {
     
     /**
     * Realiza a mutação em um determinado ponto aleatorio para uma determinada
-    * taxa de mutação
+    * taxa de mutação. A mutação não pode alterar nem o início nem o fim da rota.
     * @param cromossomosSelecionados
     * @return
     */
@@ -105,7 +108,8 @@ public class VRPSimples {
 
     /**
      * Realiza o cruzamento em um determinado ponto aleatorio para uma determinada
-     * taxa de cruzamento
+     * taxa de cruzamento. O cruzamento não pode alterar nem a primeira coordenada do primeiro par
+     * nem a última coordenada do ultimo par(iniciar e terminar no depósito)
      * @param cromossomosSelecionados
      * @return
      */
@@ -127,11 +131,11 @@ public class VRPSimples {
             if(rand.nextFloat() < taxaCruzamento) {
                 for (int i = 0; i < pai.getGenes().size(); i++) {
                     if (i < ponto) {
-                            filho1.getGenes().add(i, pai.getGenes().get(i));
-                            filho2.getGenes().add(i, mae.getGenes().get(i));
+                        filho1.getGenes().add(i, pai.getGenes().get(i));
+                        filho2.getGenes().add(i, mae.getGenes().get(i));
                     } else {
-                            filho1.getGenes().add(i,mae.getGenes().get(i));
-                            filho2.getGenes().add(i,pai.getGenes().get(i));
+                        filho1.getGenes().add(i,mae.getGenes().get(i));
+                        filho2.getGenes().add(i,pai.getGenes().get(i));
                     }
                 }
                 filhos.add(filho1);
@@ -257,5 +261,10 @@ public class VRPSimples {
     public void setQtdGeracoes(int qtdGeracoes) {
         this.qtdGeracoes = qtdGeracoes;
     }
+
+    public ArrayList<Ponto> getClientes() {
+        return clientes;
+    }
+    
     
 }
