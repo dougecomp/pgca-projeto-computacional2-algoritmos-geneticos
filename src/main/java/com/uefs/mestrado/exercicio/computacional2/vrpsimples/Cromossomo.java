@@ -5,6 +5,7 @@
  */
 package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 
+import com.uefs.mestrado.exercicio.computacional2.Ponto;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -37,9 +38,9 @@ public class Cromossomo {
         
     }
     
-    public void inicializarGenes() {
+    public void inicializarGenes(ArrayList<Ponto> clientesNaoUtilizados, Ponto inicio) {
         for (int i = 0; i < tamanho; i++) {
-            genes.get(i).inicializarValores();
+            genes.get(i).inicializarValores(clientesNaoUtilizados, inicio);
         }
     }
     

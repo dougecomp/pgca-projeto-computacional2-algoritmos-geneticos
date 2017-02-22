@@ -56,7 +56,7 @@ public class VRPSimples {
     
     public void executar() {
         
-        populacao.iniciarPopulacao();
+        populacao.iniciarPopulacao(this.clientesNaoUtilizados, inicio);
 
         int geracoes = 0;
         while(geracoes < qtdGeracoes){

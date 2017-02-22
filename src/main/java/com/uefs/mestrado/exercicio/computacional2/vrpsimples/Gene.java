@@ -37,7 +37,11 @@ public class Gene {
         
     }
     
-    public void inicializarValores() {
+    /**
+     * Gerar rotas aleatórias
+     * @param clientesNaoUtilizados 
+     */
+    public void inicializarValores(ArrayList<Ponto> clientesNaoUtilizados, Ponto inicio) {
         
     }
     

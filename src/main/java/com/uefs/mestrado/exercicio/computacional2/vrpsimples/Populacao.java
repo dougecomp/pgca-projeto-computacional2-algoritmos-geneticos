@@ -5,6 +5,7 @@
  */
 package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 
+import com.uefs.mestrado.exercicio.computacional2.Ponto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,11 +29,11 @@ public class Populacao {
     /**
      * Gerar genes aleatorios para cada cromossomo
      */
-    public void iniciarPopulacao(){
+    public void iniciarPopulacao(ArrayList<Ponto> clientesNaoUtilizados, Ponto inicio){
        
             for(int i = 0; i < tamanhoPopulacao; i++){
                 Cromossomo cromossomo = new Cromossomo(tamanhoCromossomo); 
-                cromossomo.inicializarGenes();
+                cromossomo.inicializarGenes(clientesNaoUtilizados, inicio);
                 individuos.add(cromossomo);
             }
     }
