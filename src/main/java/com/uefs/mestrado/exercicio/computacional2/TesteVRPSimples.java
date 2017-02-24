@@ -14,7 +14,8 @@ import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRPSimples;
 public class TesteVRPSimples {
        
     public static void main(String[] args) {
-        String arquivoCasoTeste = "clientes";
+        String estudante = "abraao";
+        String arquivoCasoTeste = "teste"+estudante;
         arquivoCasoTeste += ".txt";
         
         int tamanhoPopulacao = 100;

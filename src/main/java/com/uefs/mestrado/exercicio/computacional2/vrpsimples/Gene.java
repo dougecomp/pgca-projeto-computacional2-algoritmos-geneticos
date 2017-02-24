@@ -24,17 +24,15 @@ public class Gene {
     private final Random aleatorio;
     private final Ponto inicio;
     private double[] custos;
-
-    private List<Pair<Ponto,Ponto>> valores;
     
     public Gene(Ponto inicio, List<Cliente> clientes, List<Veiculo> veiculos) {
-        valores = new ArrayList<>();
         
         this.clientes = clientes;
         this.veiculos = veiculos;
         this.solucao = new ArrayList<>();
         this.inicio = inicio;
         aleatorio = new Random(10);
+        
     }
     
     public double calcularCusto() {
@@ -60,21 +58,6 @@ public class Gene {
         
         return custoTotal;
     }
-    
-    /*public double calcularCusto() {
-        
-        double custo = 0;
-        double distancia;
-        for (Pair<Ponto, Ponto> valor : valores) {
-            Ponto esquerda = valor.getEsquerda();
-            Ponto direita = valor.getDireita();
-            distancia = Math.sqrt(Math.pow(esquerda.x - direita.x, 2) + Math.pow(esquerda.y - direita.y, 2)); // distância euclidiana
-            custo += distancia;
-        }
-        
-        return custo;
-        
-    }*/
     
     /**
      * 

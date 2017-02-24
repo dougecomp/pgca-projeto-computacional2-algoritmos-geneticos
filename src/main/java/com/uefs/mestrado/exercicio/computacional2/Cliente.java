@@ -11,7 +11,7 @@ package com.uefs.mestrado.exercicio.computacional2;
  */
 public class Cliente extends Ponto {
     
-    private int demanda;
+    private final int demanda;
     
     public Cliente(int x, int y, int demanda) {
         super(x,y);

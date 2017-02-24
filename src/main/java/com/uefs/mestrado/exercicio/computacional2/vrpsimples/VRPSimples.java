@@ -42,6 +42,8 @@ public class VRPSimples {
         taxaMutacao = txMut;
         qtdGeracoes = qtdGer;
         tamanhoPopulacao = tamPop;
+        clientes = new ArrayList<>();
+        veiculos = new ArrayList<>();
         
         try {
             getCasoTeste(arquivoCasoTeste, " ");
@@ -63,7 +65,7 @@ public class VRPSimples {
         
         populacao = new Populacao(this.tamanhoPopulacao, this.clientes, this.veiculos);
         populacao.iniciarPopulacao(deposito);
-
+        
         int geracoes = 0;
         while(geracoes < qtdGeracoes){
 
@@ -229,8 +231,6 @@ public class VRPSimples {
     private void getCasoTeste(String filename, String separator) throws IOException {
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-
-        ArrayList<Cliente> clientes = new ArrayList<>();
                 
         String line = reader.readLine();
         this.qtdVeiculos = Integer.parseInt(line);
@@ -248,14 +248,13 @@ public class VRPSimples {
         this.qtdClientes = Integer.parseInt(line);
         i = 0;
         line = reader.readLine();
-        while(i < this.qtdClientes) { // captura das coordenadas dos clientes e demandas
+        while(i < this.qtdClientes) { // captura das coordenadas do depósito, dos clientes e demandas
             int x;
             int y;
             int demanda;
             String[] partes = line.split(separator);
             
-            x = Integer.parseInt(partes[0]);
-            
+            x = Integer.parseInt(partes[0]);            
             y = Integer.parseInt(partes[1]);
             
             if(i == 0) { // quando estiver capturando as coordenadas do depósito, colocar zero na demanda
@@ -266,6 +265,7 @@ public class VRPSimples {
             }
             
             line = reader.readLine();
+            i++;
         }
         
         reader.close();
