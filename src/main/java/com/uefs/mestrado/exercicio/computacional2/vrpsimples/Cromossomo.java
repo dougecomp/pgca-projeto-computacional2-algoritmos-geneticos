@@ -5,43 +5,48 @@
  */
 package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 
+import com.uefs.mestrado.exercicio.computacional2.Cliente;
 import com.uefs.mestrado.exercicio.computacional2.Ponto;
+import com.uefs.mestrado.exercicio.computacional2.Veiculo;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
- *
+ * Representação de um indivíduo ( possível solução )
  * @author douglas
  */
 public class Cromossomo {
     
     private int tamanho;
-    private ArrayList<Gene> genes;
+    private Gene gene;
     private final Random aleatorio;
+    private final Ponto inicio;
+    private List<Cliente> clientes;
+    private List<Veiculo> veiculos;
     
-    public Cromossomo(int tamanho) {
+    public Cromossomo(int tamanho, Ponto inicio, List<Cliente> clientes, List<Veiculo> veiculos) {
         
         this.tamanho = tamanho;
-        genes = new ArrayList<>();
-        aleatorio = new Random();
-        
+        this.clientes = clientes;
+        this.veiculos = veiculos;
+        this.gene = new Gene(inicio,clientes, veiculos);
+        this.aleatorio = new Random();
+        this.inicio = inicio;
     }
     
+    /**
+     * Fitnesse é o somatório dos cutos das rotas
+     * @return total do custo de uma solução
+     */
     public double calcularFitness() {
         
-        double fitness = 0;
-        for (Gene gene : genes) {
-            fitness += gene.calcularCusto();
-        }
-        
-        return fitness;
+        return this.calcularFitness();
         
     }
     
-    public void inicializarGenes(ArrayList<Ponto> clientesNaoUtilizados, Ponto inicio) {
-        for (int i = 0; i < tamanho; i++) {
-            genes.get(i).inicializarValores(clientesNaoUtilizados, inicio);
-        }
+    public void inicializarGenes() {
+        gene.inicializarValores();
     }
     
     /**
@@ -60,12 +65,12 @@ public class Cromossomo {
         this.tamanho = tamanho;
     }
 
-    public ArrayList<Gene> getGenes() {
-        return genes;
+    public Gene getGenes() {
+        return gene;
     }
 
-    public void setGenes(ArrayList<Gene> genes) {
-        this.genes = genes;
+    public void setGenes(Gene gene) {
+        this.gene = gene;
     }
     
 }

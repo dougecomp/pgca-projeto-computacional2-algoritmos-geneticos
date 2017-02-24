@@ -11,21 +11,19 @@ import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRPSimples;
  *
  * @author douglas
  */
-public class ExercicioComputacional2 {
+public class TesteVRPSimples {
        
     public static void main(String[] args) {
-        int tamanhoPopulacao = 100;
-        int tamanhoCromossomo = 20; // Quantidade de veículos
-        int quantidadeGeracoes = 50; // Critério de parada
+        String arquivoCasoTeste = "clientes";
+        arquivoCasoTeste += ".txt";
         
-        // Coordenadas do depósito
-        int xInicio = 100;
-        int yInicio = 100;
+        int tamanhoPopulacao = 100;
+        int quantidadeGeracoes = 50; // Critério de parada
         
         float taxaCruzamento = 0.7f;
         float taxaMutacao = 0.1f;
         
-        VRPSimples algoritmo = new VRPSimples(tamanhoPopulacao, tamanhoCromossomo, xInicio, yInicio, quantidadeGeracoes, taxaCruzamento, taxaMutacao);
+        VRPSimples algoritmo = new VRPSimples(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao);
         algoritmo.executar();
     }
     

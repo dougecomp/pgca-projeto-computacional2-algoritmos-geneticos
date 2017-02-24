@@ -5,12 +5,15 @@
  */
 package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 
+import com.uefs.mestrado.exercicio.computacional2.Cliente;
 import com.uefs.mestrado.exercicio.computacional2.Ponto;
+import com.uefs.mestrado.exercicio.computacional2.Veiculo;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.jfree.data.xy.XYSeries;
 
@@ -26,37 +29,40 @@ public class VRPSimples {
     private int qtdGeracoes;
     private final XYSeries dados;
     private final Random rand;
-    private final Ponto inicio;
-    private final ArrayList<Ponto> clientes;
-    private ArrayList<Ponto> clientesNaoUtilizados;
+    private Ponto deposito;
+    private List<Cliente> clientes;
+    private List<Veiculo> veiculos;
+    private int qtdVeiculos;
+    private int qtdClientes;
+    private int tamanhoPopulacao;
     
-    public VRPSimples(int tamPop, int tamCromo, int xInicio, int yInicio, int qtdGer, float txCruz, float txMut) {
+    public VRPSimples(String arquivoCasoTeste, int tamPop, int qtdGer, float txCruz, float txMut) {
         
-        populacao = new Populacao(tamPop, tamCromo);
         taxaCruzamento = txCruz;
         taxaMutacao = txMut;
         qtdGeracoes = qtdGer;
-        inicio = new Ponto(xInicio, yInicio);
-
-        ArrayList<Ponto> tmp = null;
+        tamanhoPopulacao = tamPop;
+        
         try {
-            tmp = getCoordenadasClientes("clientes.txt", ";");
+            getCasoTeste(arquivoCasoTeste, " ");
         } catch(IOException e) {
-            System.out.println("Não foi possível ler arquivo com as coordenadas dos clientes.");
+            System.out.println("Não foi possível ler arquivo do caso de teste.");
             System.exit(0);
         }
-
-        clientes = (ArrayList<Ponto>) tmp.clone();
-        clientesNaoUtilizados = (ArrayList<Ponto>) tmp.clone();
         
         dados = new XYSeries("Melhor Indivíduo");
         rand = new Random();
         
     }
     
+    /**
+     * Método para executar o algoritmo genético
+     * 
+     */
     public void executar() {
         
-        populacao.iniciarPopulacao(this.clientesNaoUtilizados, inicio);
+        populacao = new Populacao(this.tamanhoPopulacao, this.clientes, this.veiculos);
+        populacao.iniciarPopulacao(deposito);
 
         int geracoes = 0;
         while(geracoes < qtdGeracoes){
@@ -108,8 +114,7 @@ public class VRPSimples {
 
     /**
      * Realiza o cruzamento em um determinado ponto aleatorio para uma determinada
-     * taxa de cruzamento. O cruzamento não pode alterar nem a primeira coordenada do primeiro par
-     * nem a última coordenada do ultimo par(iniciar e terminar no depósito)
+     * taxa de cruzamento.
      * @param cromossomosSelecionados
      * @return
      */
@@ -120,29 +125,29 @@ public class VRPSimples {
         int ponto;
 
         int cont = 0;
-        while (cont < qtdCruzamentos) {
-            Cromossomo pai = cromossomosSelecionados.get(rand.nextInt(cromossomosSelecionados.size() - 1));
-            Cromossomo mae = cromossomosSelecionados.get(rand.nextInt(cromossomosSelecionados.size() - 1));
-
-            Cromossomo filho1 = new Cromossomo(pai.getGenes().size());
-            Cromossomo filho2 = new Cromossomo(mae.getGenes().size());
-
-            ponto = rand.nextInt(pai.getTamanho()-1);
-            if(rand.nextFloat() < taxaCruzamento) {
-                for (int i = 0; i < pai.getGenes().size(); i++) {
-                    if (i < ponto) {
-                        filho1.getGenes().add(i, pai.getGenes().get(i));
-                        filho2.getGenes().add(i, mae.getGenes().get(i));
-                    } else {
-                        filho1.getGenes().add(i,mae.getGenes().get(i));
-                        filho2.getGenes().add(i,pai.getGenes().get(i));
-                    }
-                }
-                filhos.add(filho1);
-                filhos.add(filho2);
-            }
-            cont++;
-        }
+//        while (cont < qtdCruzamentos) {
+//            Cromossomo pai = cromossomosSelecionados.get(rand.nextInt(cromossomosSelecionados.size() - 1));
+//            Cromossomo mae = cromossomosSelecionados.get(rand.nextInt(cromossomosSelecionados.size() - 1));
+//
+//            Cromossomo filho1 = new Cromossomo(pai.getGenes().size());
+//            Cromossomo filho2 = new Cromossomo(mae.getGenes().size());
+//
+//            ponto = rand.nextInt(pai.getTamanho()-1);
+//            if(rand.nextFloat() < taxaCruzamento) {
+//                for (int i = 0; i < pai.getGenes().size(); i++) {
+//                    if (i < ponto) {
+//                        filho1.getGenes().add(i, pai.getGenes().get(i));
+//                        filho2.getGenes().add(i, mae.getGenes().get(i));
+//                    } else {
+//                        filho1.getGenes().add(i,mae.getGenes().get(i));
+//                        filho2.getGenes().add(i,pai.getGenes().get(i));
+//                    }
+//                }
+//                filhos.add(filho1);
+//                filhos.add(filho2);
+//            }
+//            cont++;
+//        }
         return filhos;
 
     }
@@ -204,29 +209,66 @@ public class VRPSimples {
 
     }
     
-    private ArrayList<Ponto> getCoordenadasClientes(String filename, String separator) throws IOException {
+    /**
+     * Método de leitura do arquivo do estudo do caso de teste
+     * como definido em sala
+     * K [num carros]
+     * C1 [capacidade carro 1]
+     * C2
+     * ...
+     * Ck
+     * N [num clientes]
+     * X0 Y0 [coordenadas do depósito central]
+     * X1 Y1 D1 [coordenadas e demanda do cliente1]
+     * ...
+     * Xn Yn Dn 
+     * @param filename
+     * @param separator
+     * @throws IOException 
+     */
+    private void getCasoTeste(String filename, String separator) throws IOException {
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
 
-        ArrayList<Ponto> pontos = new ArrayList<>();
+        ArrayList<Cliente> clientes = new ArrayList<>();
                 
         String line = reader.readLine();
-        while(line!=null){
+        this.qtdVeiculos = Integer.parseInt(line);
+        int i = 0;
+        line = reader.readLine();
+        while(i < this.qtdVeiculos){ // captura das capacidades dos veículos
+            int capacidade = Integer.parseInt(line);
+
+            veiculos.add(new Veiculo(capacidade));
+            
+            line = reader.readLine();
+            i++;
+        }
+        
+        this.qtdClientes = Integer.parseInt(line);
+        i = 0;
+        line = reader.readLine();
+        while(i < this.qtdClientes) { // captura das coordenadas dos clientes e demandas
             int x;
             int y;
+            int demanda;
             String[] partes = line.split(separator);
             
             x = Integer.parseInt(partes[0]);
             
             y = Integer.parseInt(partes[1]);
-
-            pontos.add(new Ponto(x, y));
+            
+            if(i == 0) { // quando estiver capturando as coordenadas do depósito, colocar zero na demanda
+                this.deposito = new Ponto(x, y);
+            } else {
+                demanda = Integer.parseInt(partes[2]);
+                this.clientes.add(new Cliente(x, y,demanda));
+            }
             
             line = reader.readLine();
-        }   
-        reader.close();
+        }
         
-        return pontos;
+        reader.close();
         
     }
 
@@ -262,8 +304,40 @@ public class VRPSimples {
         this.qtdGeracoes = qtdGeracoes;
     }
 
-    public ArrayList<Ponto> getClientes() {
+    public List<Cliente> getClientes() {
         return clientes;
+    }
+
+    public Ponto getDeposito() {
+        return deposito;
+    }
+
+    public void setDeposito(Ponto deposito) {
+        this.deposito = deposito;
+    }
+
+    public List<Veiculo> getVeiculos() {
+        return veiculos;
+    }
+
+    public void setVeiculos(List<Veiculo> veiculos) {
+        this.veiculos = veiculos;
+    }
+
+    public int getQtdVeiculos() {
+        return qtdVeiculos;
+    }
+
+    public void setQtdVeiculos(int qtdVeiculos) {
+        this.qtdVeiculos = qtdVeiculos;
+    }
+
+    public int getQtdClientes() {
+        return qtdClientes;
+    }
+
+    public void setQtdClientes(int qtdClientes) {
+        this.qtdClientes = qtdClientes;
     }
     
     

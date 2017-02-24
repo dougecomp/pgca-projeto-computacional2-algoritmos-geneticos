@@ -5,10 +5,13 @@
  */
 package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 
+import com.uefs.mestrado.exercicio.computacional2.Cliente;
 import com.uefs.mestrado.exercicio.computacional2.Ponto;
+import com.uefs.mestrado.exercicio.computacional2.Veiculo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  *
@@ -16,50 +19,57 @@ import java.util.Comparator;
  */
 public class Populacao {
     
-    private ArrayList<Cromossomo> individuos;
+    private List<Cromossomo> individuos;
+    private List<Cliente> clientes;
+    private List<Veiculo> veiculos;
     private int tamanhoPopulacao;
     private int tamanhoCromossomo;
     
-    public Populacao(int tamPop, int tamCromo) {
+    public Populacao(int tamPop, List<Cliente> clientes, List<Veiculo> veiculos) {
         this.tamanhoPopulacao = tamPop;
-    	this.tamanhoCromossomo = tamCromo;
+    	this.tamanhoCromossomo = clientes.size();
     	individuos = new ArrayList<Cromossomo>();
+        this.veiculos = veiculos;
+        this.clientes = clientes;
     }
     
     /**
      * Gerar genes aleatorios para cada cromossomo
+     * @param inicio
      */
-    public void iniciarPopulacao(ArrayList<Ponto> clientesNaoUtilizados, Ponto inicio){
+    public void iniciarPopulacao(Ponto inicio) {
        
-            for(int i = 0; i < tamanhoPopulacao; i++){
-                Cromossomo cromossomo = new Cromossomo(tamanhoCromossomo); 
-                cromossomo.inicializarGenes(clientesNaoUtilizados, inicio);
-                individuos.add(cromossomo);
-            }
+        for(int i = 0; i < tamanhoPopulacao; i++){
+            Cromossomo cromossomo = new Cromossomo(tamanhoCromossomo, inicio, clientes, veiculos); 
+            cromossomo.inicializarGenes();
+            individuos.add(cromossomo);
+        }
+        
     }
     
     /**
      * Ordenar arrayList de objetos Cromossos por ordem descendente de fitness
+     * Cortar os indivíduos com custo maior
      */
     public void ordenarPorFitness() {
     	
-    	 Collections.sort(individuos, new Comparator<Object>(){
-             @Override
-             public int compare(Object o1, Object o2){
-                 Cromossomo c1 = (Cromossomo) o1;
-                 Cromossomo c2 = (Cromossomo) o2;
-                 if(c1.calcularFitness() < c2.calcularFitness())
-                     return 1;
-                 else
-                     if(c1.calcularFitness() > c2.calcularFitness())
-                         return -1;
-                     else
-                         return 0;
-             }
-         });    	 
+    	Collections.sort(individuos, new Comparator<Object>(){
+            @Override
+            public int compare(Object o1, Object o2){
+                Cromossomo c1 = (Cromossomo) o1;
+                Cromossomo c2 = (Cromossomo) o2;
+                if(c1.calcularFitness() < c2.calcularFitness())
+                    return 1;
+                else
+                    if(c1.calcularFitness() > c2.calcularFitness())
+                        return -1;
+                    else
+                        return 0;
+            }
+        });    	 
     }
 
-    public ArrayList<Cromossomo> getIndividuos() {
+    public List<Cromossomo> getIndividuos() {
         return individuos;
     }
 
