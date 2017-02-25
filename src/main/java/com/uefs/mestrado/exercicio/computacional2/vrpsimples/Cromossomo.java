@@ -8,7 +8,6 @@ package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 import com.uefs.mestrado.exercicio.computacional2.Cliente;
 import com.uefs.mestrado.exercicio.computacional2.Ponto;
 import com.uefs.mestrado.exercicio.computacional2.Veiculo;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,19 +18,25 @@ import java.util.Random;
 public class Cromossomo {
     
     private int tamanho;
+    private double fitness;
     private Gene gene;
-    private final Random aleatorio;
     private final Ponto inicio;
-    private List<Cliente> clientes;
-    private List<Veiculo> veiculos;
+    private final List<Cliente> clientes;
+    private final List<Veiculo> veiculos;
     
+    /**
+     * 
+     * @param tamanho
+     * @param inicio
+     * @param clientes
+     * @param veiculos 
+     */
     public Cromossomo(int tamanho, Ponto inicio, List<Cliente> clientes, List<Veiculo> veiculos) {
         
         this.tamanho = tamanho;
         this.clientes = clientes;
         this.veiculos = veiculos;
         this.gene = new Gene(inicio,clientes, veiculos);
-        this.aleatorio = new Random();
         this.inicio = inicio;
     }
     
@@ -40,21 +45,22 @@ public class Cromossomo {
      * @return total do custo de uma solução
      */
     public double calcularFitness() {
-        
-        return this.calcularFitness();
+        fitness = gene.calcularCusto();
+        return fitness;
         
     }
     
-    public void inicializarGenes() {
-        gene.inicializarValores();
+    public void inicializarGenes(Random semente) {
+        gene.inicializarValores(semente);
     }
     
     /**
-     * A mutação não pode alterar nem a primeira
-     * nem a última coordenada (início e fim sempre no depósito) 
+     * Chamar método do gene para fazer uma permutação entre dois veículos
+     * 
+     * @param semente 
      */
-    public void aplicarMutacao() {
-        
+    public void aplicarMutacao(Random semente) {
+        gene.aplicarMutacao(semente);
     }
 
     public int getTamanho() {

@@ -18,13 +18,15 @@ public class TesteVRPSimples {
         String arquivoCasoTeste = "teste"+estudante;
         arquivoCasoTeste += ".txt";
         
-        int tamanhoPopulacao = 100;
+        int tamanhoPopulacao = 20;
         int quantidadeGeracoes = 50; // Critério de parada
         
         float taxaCruzamento = 0.7f;
         float taxaMutacao = 0.1f;
         
-        VRPSimples algoritmo = new VRPSimples(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao);
+        long valorSemente = (long) 50;
+        
+        VRPSimples algoritmo = new VRPSimples(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao, valorSemente);
         algoritmo.executar();
     }
     

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -36,12 +37,13 @@ public class Populacao {
     /**
      * Gerar genes aleatorios para cada cromossomo
      * @param inicio
+     * @param semente 
      */
-    public void iniciarPopulacao(Ponto inicio) {
+    public void iniciarPopulacao(Ponto inicio, Random semente) {
        
         for(int i = 0; i < tamanhoPopulacao; i++){
             Cromossomo cromossomo = new Cromossomo(tamanhoCromossomo, inicio, clientes, veiculos); 
-            cromossomo.inicializarGenes();
+            cromossomo.inicializarGenes(semente);
             individuos.add(cromossomo);
         }
         
@@ -51,22 +53,50 @@ public class Populacao {
      * Ordenar arrayList de objetos Cromossos por ordem descendente de fitness
      * Cortar os indivíduos com custo maior
      */
-    public void ordenarPorFitness() {
+    public void ordenarPorFitnessDescendente() {
     	
     	Collections.sort(individuos, new Comparator<Object>(){
             @Override
             public int compare(Object o1, Object o2){
                 Cromossomo c1 = (Cromossomo) o1;
                 Cromossomo c2 = (Cromossomo) o2;
-                if(c1.calcularFitness() < c2.calcularFitness())
+                if(c1.calcularFitness() < c2.calcularFitness()) {
                     return 1;
-                else
-                    if(c1.calcularFitness() > c2.calcularFitness())
-                        return -1;
-                    else
-                        return 0;
+                } else if(c1.calcularFitness() > c2.calcularFitness()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
             }
         });    	 
+    }
+    
+    /**
+     * Ordenar arrayList de objetos Cromossos por ordem descendente de fitness
+     * Cortar os indivíduos com custo maior
+     */
+    public void ordenarPorFitnessAscendente() {
+    	
+    	Collections.sort(individuos, new Comparator<Object>(){
+            @Override
+            public int compare(Object o1, Object o2){
+                Cromossomo c1 = (Cromossomo) o1;
+                Cromossomo c2 = (Cromossomo) o2;
+                if(c1.calcularFitness() > c2.calcularFitness()) {
+                    return 1;
+                } else if(c1.calcularFitness() < c2.calcularFitness()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });    	 
+    }
+    
+    public void printAllFitness() {
+        for (Cromossomo individuo : individuos) {
+            System.out.println(individuo.calcularFitness());
+        }
     }
 
     public List<Cromossomo> getIndividuos() {
