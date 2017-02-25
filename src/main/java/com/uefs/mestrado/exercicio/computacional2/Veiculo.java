@@ -9,18 +9,20 @@ package com.uefs.mestrado.exercicio.computacional2;
  *
  * @author douglas
  */
-public class Veiculo{
+public class Veiculo {
     
     private final int capacidade;
     
     /**
      *
-     * @param x
-     * @param y
      * @param capacidade
      */
     public Veiculo(int capacidade) {
         this.capacidade = capacidade;
+    }
+
+    public int getCapacidade() {
+        return capacidade;
     }
     
 }

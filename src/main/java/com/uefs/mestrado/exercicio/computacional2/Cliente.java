@@ -17,5 +17,9 @@ public class Cliente extends Ponto {
         super(x,y);
         this.demanda = demanda;
     }
+
+    public int getDemanda() {
+        return demanda;
+    }
     
 }

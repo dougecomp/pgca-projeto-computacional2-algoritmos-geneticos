@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -31,7 +30,7 @@ private static class Line{
     }               
 }
 
-private final LinkedList<Line> lines = new LinkedList<Line>();
+private final LinkedList<Line> lines = new LinkedList<>();
 
 public void addLine(int x1, int x2, int x3, int x4) {
     addLine(x1, x2, x3, x4, Color.black);
@@ -53,6 +52,9 @@ protected void paintComponent(Graphics g) {
     for (Line line : lines) {
         g.setColor(line.color);
         g.drawLine(line.x1, line.y1, line.x2, line.y2);
+        //g.drawOval(line.x1, line.y1-5, 10, 10);
+        //g.drawOval(line.x2, line.y2-5, 10, 10);
+        //g.drawString("teste",(line.x1+line.x2)/2, (line.y1+line.y2)/2);
     }
 }
 
@@ -68,24 +70,16 @@ public static void main(String[] args) {
     buttonsPanel.add(newLineButton);
     buttonsPanel.add(clearButton);
     testFrame.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
-    newLineButton.addActionListener(new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int x1 = (int) (Math.random()*500);
-            int x2 = (int) (Math.random()*500);
-            int y1 = (int) (Math.random()*500);
-            int y2 = (int) (Math.random()*500);
-            Color randomColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random());
-            comp.addLine(x1, y1, x2, y2, randomColor);
-        }
+    newLineButton.addActionListener((ActionEvent e) -> {
+        int x1 = (int) (Math.random()*500);
+        int x2 = (int) (Math.random()*500);
+        int y1 = (int) (Math.random()*500);
+        int y2 = (int) (Math.random()*500);
+        Color randomColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random());
+        comp.addLine(x1, y1, x2, y2, randomColor);
     });
-    clearButton.addActionListener(new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            comp.clearLines();
-        }
+    clearButton.addActionListener((ActionEvent e) -> {
+        comp.clearLines();
     });
     testFrame.pack();
     testFrame.setVisible(true);

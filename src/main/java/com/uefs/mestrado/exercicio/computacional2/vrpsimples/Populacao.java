@@ -10,7 +10,6 @@ import com.uefs.mestrado.exercicio.computacional2.Ponto;
 import com.uefs.mestrado.exercicio.computacional2.Veiculo;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -21,15 +20,15 @@ import java.util.Random;
 public class Populacao {
     
     private List<Cromossomo> individuos;
-    private List<Cliente> clientes;
-    private List<Veiculo> veiculos;
+    private final List<Cliente> clientes;
+    private final List<Veiculo> veiculos;
     private int tamanhoPopulacao;
     private int tamanhoCromossomo;
     
     public Populacao(int tamPop, List<Cliente> clientes, List<Veiculo> veiculos) {
         this.tamanhoPopulacao = tamPop;
     	this.tamanhoCromossomo = clientes.size();
-    	individuos = new ArrayList<Cromossomo>();
+    	individuos = new ArrayList<>();
         this.veiculos = veiculos;
         this.clientes = clientes;
     }
@@ -55,20 +54,17 @@ public class Populacao {
      */
     public void ordenarPorFitnessDescendente() {
     	
-    	Collections.sort(individuos, new Comparator<Object>(){
-            @Override
-            public int compare(Object o1, Object o2){
-                Cromossomo c1 = (Cromossomo) o1;
-                Cromossomo c2 = (Cromossomo) o2;
-                if(c1.calcularFitness() < c2.calcularFitness()) {
-                    return 1;
-                } else if(c1.calcularFitness() > c2.calcularFitness()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
+    	Collections.sort(individuos, (Object o1, Object o2) -> {
+            Cromossomo c1 = (Cromossomo) o1;
+            Cromossomo c2 = (Cromossomo) o2;
+            if(c1.calcularFitness() < c2.calcularFitness()) {
+                return 1;
+            } else if(c1.calcularFitness() > c2.calcularFitness()) {
+                return -1;
+            } else {
+                return 0;
             }
-        });    	 
+            });    	 
     }
     
     /**
@@ -77,20 +73,17 @@ public class Populacao {
      */
     public void ordenarPorFitnessAscendente() {
     	
-    	Collections.sort(individuos, new Comparator<Object>(){
-            @Override
-            public int compare(Object o1, Object o2){
-                Cromossomo c1 = (Cromossomo) o1;
-                Cromossomo c2 = (Cromossomo) o2;
-                if(c1.calcularFitness() > c2.calcularFitness()) {
-                    return 1;
-                } else if(c1.calcularFitness() < c2.calcularFitness()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
+    	Collections.sort(individuos, (Object o1, Object o2) -> {
+            Cromossomo c1 = (Cromossomo) o1;
+            Cromossomo c2 = (Cromossomo) o2;
+            if(c1.calcularFitness() > c2.calcularFitness()) {
+                return 1;
+            } else if(c1.calcularFitness() < c2.calcularFitness()) {
+                return -1;
+            } else {
+                return 0;
             }
-        });    	 
+            });    	 
     }
     
     public void printAllFitness() {

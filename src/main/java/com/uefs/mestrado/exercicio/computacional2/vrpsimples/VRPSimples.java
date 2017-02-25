@@ -23,6 +23,7 @@ import org.jfree.data.xy.XYSeries;
  */
 public class VRPSimples {
     
+    private String arquivoCasoTeste;
     private Populacao populacao;
     private float taxaMutacao;
     private float taxaCruzamento;
@@ -38,6 +39,7 @@ public class VRPSimples {
     
     public VRPSimples(String arquivoCasoTeste, int tamPop, int qtdGer, float txCruz, float txMut, long valorSemente) {
         
+        this.arquivoCasoTeste = arquivoCasoTeste;
         taxaCruzamento = txCruz;
         taxaMutacao = txMut;
         qtdGeracoes = qtdGer;
@@ -48,7 +50,7 @@ public class VRPSimples {
         semente = new Random(valorSemente);
         
         try {
-            getCasoTeste(arquivoCasoTeste, " ");
+            getCasoTeste(this.arquivoCasoTeste, " ");
         } catch(IOException e) {
             System.out.println("Não foi possível ler arquivo do caso de teste.");
             System.exit(0);
@@ -66,7 +68,6 @@ public class VRPSimples {
         
         populacao = new Populacao(this.tamanhoPopulacao, this.clientes, this.veiculos);
         populacao.iniciarPopulacao(deposito, semente);
-        //populacao.printAllFitness();
         
         int geracoes = 0;
         while(geracoes < qtdGeracoes) {
@@ -85,9 +86,6 @@ public class VRPSimples {
         
         }
 
-        //plotaGrafico();
-        String s = "Melhor resultado obtido foi com custo igual a: " + getMelhorResultado().calcularFitness();
-        System.out.println(s);
         //JOptionPane.showMessageDialog(null, s);*/
         
     }
@@ -100,16 +98,17 @@ public class VRPSimples {
     */
     public ArrayList<Cromossomo> mutacaoUmPonto(ArrayList<Cromossomo> cromossomosSelecionados) {
 
-        ArrayList<Cromossomo> resultMutacao = new ArrayList<Cromossomo>();
+        ArrayList<Cromossomo> resultMutacao = new ArrayList<>();
 
-        for(int i = 0; i < cromossomosSelecionados.size(); i++){
+        for(int i = 0; i < cromossomosSelecionados.size(); i++) {
+            
             int ponto = semente.nextInt(cromossomosSelecionados.size() - 1);
             Cromossomo individuo = cromossomosSelecionados.get(ponto);
-            int gene = semente.nextInt(individuo.getTamanho() - 1);
 
             if(semente.nextFloat() < taxaMutacao){
                 individuo.aplicarMutacao(semente);
             }
+            
             resultMutacao.add(individuo);
         }
         return resultMutacao;
@@ -123,7 +122,7 @@ public class VRPSimples {
      */
     public ArrayList<Cromossomo> cruzamentoUmPonto(ArrayList<Cromossomo> cromossomosSelecionados) {
 
-        ArrayList<Cromossomo> filhos = new ArrayList<Cromossomo>();
+        ArrayList<Cromossomo> filhos = new ArrayList<>();
         int qtdCruzamentos = cromossomosSelecionados.size();
         int ponto;
 
@@ -165,7 +164,7 @@ public class VRPSimples {
 
         ArrayList<Cromossomo> cromossomosSelecionados = new ArrayList<>();
         double sum = 0;
-        double sumParcial = 0;
+        double sumParcial;
         int cont = 0;
 
         for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
@@ -217,7 +216,7 @@ public class VRPSimples {
     
     /**
      * Método de leitura do arquivo do estudo do caso de teste
-     * como definido em sala
+     * como definido em sala de aula
      * K [num carros]
      * C1 [capacidade carro 1]
      * C2
@@ -261,7 +260,7 @@ public class VRPSimples {
             x = Integer.parseInt(partes[0]);            
             y = Integer.parseInt(partes[1]);
             
-            if(i == 0) { // quando estiver capturando as coordenadas do depósito, colocar zero na demanda
+            if(i == 0) { // Capturando as coordenadas do depósito
                 this.deposito = new Ponto(x, y);
             } else {
                 demanda = Integer.parseInt(partes[2]);
