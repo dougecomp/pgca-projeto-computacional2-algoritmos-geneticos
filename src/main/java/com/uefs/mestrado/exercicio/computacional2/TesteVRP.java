@@ -18,7 +18,7 @@ public class TesteVRP {
     
     public static VRP rodar() {
         String estudante = "abraao";
-        String arquivoCasoTeste = "teste"+estudante;
+        String arquivoCasoTeste = "casos-teste/teste"+estudante;
         arquivoCasoTeste += ".txt";
         
         int tamanhoPopulacao = 100;
