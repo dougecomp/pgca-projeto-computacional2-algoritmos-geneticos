@@ -7,35 +7,59 @@ package com.uefs.mestrado.exercicio.computacional2;
 
 import com.uefs.mestrado.exercicio.computacional2.vrpsimples.Cromossomo;
 import com.uefs.mestrado.exercicio.computacional2.vrpsimples.Populacao;
-import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRPSimples;
+import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRP;
 import java.util.List;
 
 /**
  *
  * @author douglas
  */
-public class TesteVRPSimples {
+public class TesteVRP {
     
-    public static void main(String[] args) {
+    public static VRP rodar() {
         String estudante = "abraao";
         String arquivoCasoTeste = "teste"+estudante;
         arquivoCasoTeste += ".txt";
         
-        int tamanhoPopulacao = 20;
-        int quantidadeGeracoes = 50; // Critério de parada
+        int tamanhoPopulacao = 100;
+        int quantidadeGeracoes = 500; // Critério de parada
         
-        float taxaCruzamento = 0.7f;
-        float taxaMutacao = 0.1f;
+        float taxaCruzamento = 0.9f;
+        float taxaMutacao = 0.05f;
         
         long valorSemente = (long) 50;
         
-        VRPSimples algoritmo = new VRPSimples(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao, valorSemente);
+        VRP algoritmo = new VRP(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao, valorSemente);
         algoritmo.executar();
         
         Populacao p = algoritmo.getPopulacao();
         
         String s = arquivoCasoTeste+" "+algoritmo.getMelhorResultado().calcularFitness();
         System.out.println(s);
+        return algoritmo;
+    }
+
+    public static void main(String[] args) {
+        String estudante = "abraao";
+        String arquivoCasoTeste = "teste"+estudante;
+        arquivoCasoTeste += ".txt";
+        
+        int tamanhoPopulacao = 100;
+        int quantidadeGeracoes = 500; // Critério de parada
+        
+        float taxaCruzamento = 0.9f;
+        float taxaMutacao = 0.05f;
+        
+        long valorSemente = (long) 50;
+        
+        VRP algoritmo = new VRP(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao, valorSemente);
+        algoritmo.executar();
+        
+        Populacao p = algoritmo.getPopulacao();
+        
+        String s = arquivoCasoTeste+" "+algoritmo.getMelhorResultado().calcularFitness();
+        System.out.println(s);
+        
     }
     
     private static double media(Populacao p) {

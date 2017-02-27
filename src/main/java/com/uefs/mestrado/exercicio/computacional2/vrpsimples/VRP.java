@@ -21,7 +21,7 @@ import org.jfree.data.xy.XYSeries;
  *
  * @author douglas
  */
-public class VRPSimples {
+public class VRP {
     
     private String arquivoCasoTeste;
     private Populacao populacao;
@@ -37,7 +37,7 @@ public class VRPSimples {
     private int tamanhoPopulacao;
     private Random semente;
     
-    public VRPSimples(String arquivoCasoTeste, int tamPop, int qtdGer, float txCruz, float txMut, long valorSemente) {
+    public VRP(String arquivoCasoTeste, int tamPop, int qtdGer, float txCruz, float txMut, long valorSemente) {
         
         this.arquivoCasoTeste = arquivoCasoTeste;
         taxaCruzamento = txCruz;

@@ -37,26 +37,36 @@ public class GeneVRPC extends Gene {
                 
                 if( veiculos.get(i) == solucao.get(j) ) {
                     
-                    if( custosParciais[i] == 0 ) { // distância do depósito para o primeiro cliente
+                    if( custosParciais[i] == 0 && ultimoClienteVisitado == null ) { // distância do depósito para o primeiro cliente
                         
                         distancia = Math.sqrt(Math.pow(inicio.getX() - clientes.get(j).getX(), 2) + Math.pow(inicio.getY() - clientes.get(j).getY(), 2)); // distância euclidiana
                         demandas[i] += clientes.get(j).getDemanda();
+                        
                     } else if( (j + 1) == clientes.size() ) { // Último cliente, então calcular distância do ultimo cliente para o inicio
                         
-                        distancia = Math.sqrt(Math.pow(inicio.getX() - ultimoClienteVisitado.getX(), 2) + Math.pow(inicio.getY() - ultimoClienteVisitado.getY(), 2)); // distância euclidiana;
+                        distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - inicio.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - inicio.getY(), 2)); // distância euclidiana;
                         if(demandas[i] > veiculos.get(i).getCapacidade()) { // Se a demanda ficou maior do que a capacidade do veículo i, então aplica-se uma penalidade no cálculo do custo devido a ter gerado uma solução infactível
                             distancia *= 5;
                         }
+                        
                     } else { // No meio da rota. Calcular distância entre o cliente anterior para o atual
                         
                         distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - clientes.get(j).getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - clientes.get(j).getY(), 2)); // distância euclidiana;
                         demandas[i] += clientes.get(j).getDemanda();
+                        
                     }
                     
                     custosParciais[i] += distancia;
                     custoTotal += distancia;
                     ultimoClienteVisitado = clientes.get(j);
                     
+                } else if( (j + 1) == clientes.size() && custosParciais[i] > 0 && ultimoClienteVisitado != null ) { // Caso tenha visitado algum cliente, volte para o inicio
+                    distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - inicio.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - inicio.getY() , 2)); // distância euclidiana
+                    if (demandas[i] > veiculos.get(i).getCapacidade()) { // Se a demanda ficou maior do que a capacidade do veículo i, então aplica-se uma penalidade no cálculo do custo devido a ter gerado uma solução infactível
+                        distancia *= 5;
+                    }
+                    custosParciais[i] += distancia;
+                    custoTotal += distancia;
                 }
             }
         }        

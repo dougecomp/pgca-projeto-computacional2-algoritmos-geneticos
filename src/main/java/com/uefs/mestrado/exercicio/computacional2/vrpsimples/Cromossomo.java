@@ -72,7 +72,7 @@ public class Cromossomo {
         this.tamanho = tamanho;
     }
 
-    public GeneVRPC getGenes() {
+    public Gene getGenes() {
         return gene;
     }
 

@@ -50,13 +50,13 @@ public class Gene {
                 
                 if( veiculos.get(i) == solucao.get(j) ) {
                     
-                    if( custosParciais[i] == 0 ) { // distância do depósito para o primeiro cliente
+                    if( custosParciais[i] == 0 && ultimoClienteVisitado == null) { // distância do depósito para o primeiro cliente
                         
                         distancia = Math.sqrt(Math.pow(inicio.getX() - clientes.get(j).getX(), 2) + Math.pow(inicio.getY() - clientes.get(j).getY(), 2)); // distância euclidiana
                         
                     } else if( (j + 1) == clientes.size() ) { // Último cliente, então calcular distância do ultimo cliente para o inicio
                         
-                        distancia = Math.sqrt(Math.pow(inicio.getX() - ultimoClienteVisitado.getX(), 2) + Math.pow(inicio.getY() - ultimoClienteVisitado.getY(), 2)); // distância euclidiana;
+                        distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - inicio.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - inicio.getY(), 2)); // distância euclidiana;
                         
                     } else { // No meio da rota. Calcular distância entre o cliente anterior para o atual
                         
@@ -68,6 +68,10 @@ public class Gene {
                     custoTotal += distancia;
                     ultimoClienteVisitado = clientes.get(j);
                     
+                } else if( (j + 1) == clientes.size() && custosParciais[i] > 0 && ultimoClienteVisitado != null ) { // Caso tenha visitado algum cliente, volte para o inicio
+                    distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - inicio.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - inicio.getY() , 2)); // distância euclidiana
+                    custosParciais[i] += distancia;
+                    custoTotal += distancia;
                 }
             }
         }        
@@ -106,6 +110,37 @@ public class Gene {
         solucao.set(primeiro, solucao.get(segundo)); // Coloca o segundo no primeiro
         solucao.set(segundo, tmp); // Guarda o temporário do primeiro no segundo
         
+    }
+    
+    /**
+     * Método que monta uma lista de rotas para cada veículo presente na solução
+     * @return 
+     */
+    public List<List<Ponto>> getRotas() {
+        
+        List<List<Ponto>> rotas = new ArrayList<>(veiculos.size());
+        for (int i = 0; i < veiculos.size(); i++) {
+            rotas.add(new ArrayList<>());
+            for (int j = 0; j < clientes.size(); j++) {
+                
+                if( veiculos.get(i) == solucao.get(j) ) {
+                    
+                    if(rotas.get(i).isEmpty()) { // rota de depósito para o primeiro cliente
+                        rotas.get(i).add(inicio);
+                        rotas.get(i).add(clientes.get(j));
+                    } else if((j + 1) == clientes.size()) { // rota de último cliente para o depósito
+                        rotas.get(i).add(inicio);
+                    } else { // No meio da rota. Rota entre o cliente anterior para o atual
+                        rotas.get(i).add(clientes.get(j));
+                    }
+                    
+                } else if( (j + 1) == clientes.size() && !rotas.get(i).isEmpty() ) { // Caso tenham visitado algum cliente, volte para o inicio
+                    rotas.get(i).add(inicio);
+                }
+            }
+        }
+        
+        return rotas;
     }
     
     public List<Veiculo> getVeiculos() {
