@@ -88,8 +88,7 @@ public class Gene {
     public void inicializarValores(Random semente) {
         for (int i = 0; i < clientes.size(); i++) {
             solucao.add(veiculos.get(semente.nextInt(veiculos.size())));
-        }
-        
+        }        
     }
     
     /**
@@ -169,6 +168,12 @@ public class Gene {
         }
         
         return rotas;
+    }
+    
+    public double getDistanciaEuclidiana(Ponto p, Ponto q) {
+        double distancia;
+        distancia = Math.sqrt(Math.pow(p.getX() - q.getX(), 2) + Math.pow(p.getY() - q.getY(), 2)); // distância euclidiana;
+        return distancia;
     }
     
     public List<Veiculo> getVeiculos() {

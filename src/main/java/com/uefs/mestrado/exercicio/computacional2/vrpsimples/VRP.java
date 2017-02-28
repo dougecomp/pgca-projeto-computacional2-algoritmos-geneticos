@@ -42,7 +42,8 @@ public class VRP {
     private int qtdClientes;
     private int tamanhoPopulacao;
     private Random semente;
-    private int metodoCruzamentoMutacao;
+    private int metodoCruzamento;
+    private int metodoMutacao;
     private int metodoSelecao;
     
     public VRP(String arquivoCasoTeste, int tamPop, int qtdGer, float txCruz, float txMut, long valorSemente) {
@@ -54,7 +55,8 @@ public class VRP {
         tamanhoPopulacao = tamPop;
         clientes = new ArrayList<>();
         veiculos = new ArrayList<>();
-        metodoCruzamentoMutacao = 1;
+        metodoCruzamento = 1;
+        metodoMutacao = 1;
         metodoSelecao = 1;
         
         if(valorSemente != 0)
@@ -124,7 +126,7 @@ public class VRP {
     }
 
     private ArrayList<Cromossomo> aplicarOperadorRecombinacao(ArrayList<Cromossomo> selecionados) {
-        switch (this.metodoCruzamentoMutacao) {
+        switch (this.metodoCruzamento) {
             case 1:
                 return cruzamentoUmPonto(selecionados);
             case 2:
@@ -135,7 +137,7 @@ public class VRP {
     }
     
     private ArrayList<Cromossomo> aplicarOperadorMutacao(ArrayList<Cromossomo> selecionados) {
-        switch (this.metodoCruzamentoMutacao) {
+        switch (this.metodoMutacao) {
             case 1:
                 return mutacaoUmPonto(selecionados);
             case 2:
@@ -328,7 +330,7 @@ public class VRP {
         for (int i = 0; i < qtdSele/2; i++) {
             Cromossomo primeiro = populacao.getIndividuos().get(semente.nextInt(populacao.getIndividuos().size()));
             Cromossomo segundo = populacao.getIndividuos().get(semente.nextInt(populacao.getIndividuos().size()));
-            if(primeiro.calcularFitness() > segundo.calcularFitness()) {
+            if(primeiro.calcularFitness() < segundo.calcularFitness()) { // Melhor indivíduo com menor custo é melhor
                 cromossomosSelecionados.add(primeiro);
             } else {
                 cromossomosSelecionados.add(segundo);
@@ -521,12 +523,20 @@ public class VRP {
         this.qtdClientes = qtdClientes;
     }
 
-    public int getMetodoCruzamentoMutacao() {
-        return metodoCruzamentoMutacao;
+    public int getMetodoCruzamento() {
+        return metodoCruzamento;
     }
 
-    public void setMetodoCruzamentoMutacao(int metodoCruzamentoMutacao) {
-        this.metodoCruzamentoMutacao = metodoCruzamentoMutacao;
+    public void setMetodoCruzamento(int metodoCruzamento) {
+        this.metodoCruzamento = metodoCruzamento;
+    }
+
+    public int getMetodoMutacao() {
+        return metodoMutacao;
+    }
+
+    public void setMetodoMutacao(int metodoMutacao) {
+        this.metodoMutacao = metodoMutacao;
     }
 
     public int getMetodoSelecao() {
