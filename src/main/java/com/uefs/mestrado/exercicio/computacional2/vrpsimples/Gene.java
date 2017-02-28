@@ -22,7 +22,6 @@ public class Gene {
     protected final List<Veiculo> veiculos;
     protected List<Veiculo> solucao;
     protected final Ponto inicio;
-    protected double[] custos;
     
     public Gene(Ponto inicio, List<Cliente> clientes, List<Veiculo> veiculos) {
         

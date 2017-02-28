@@ -28,7 +28,7 @@ public class Populacao {
     public Populacao(int tamPop, List<Cliente> clientes, List<Veiculo> veiculos) {
         this.tamanhoPopulacao = tamPop;
     	this.tamanhoCromossomo = clientes.size();
-    	individuos = new ArrayList<>();
+    	this.individuos = new ArrayList<>();
         this.veiculos = veiculos;
         this.clientes = clientes;
     }
@@ -50,9 +50,9 @@ public class Populacao {
     
     /**
      * Ordenar arrayList de objetos Cromossos por ordem descendente de fitness
-     * Cortar os indivíduos com custo maior
+     * 
      */
-    public void ordenarPorFitnessDescendente() {
+    public void ordenarPorFitnessDecrescente() {
     	
     	Collections.sort(individuos, (Object o1, Object o2) -> {
             Cromossomo c1 = (Cromossomo) o1;
@@ -68,10 +68,10 @@ public class Populacao {
     }
     
     /**
-     * Ordenar arrayList de objetos Cromossos por ordem descendente de fitness
+     * Ordenar arrayList de objetos Cromossos por ordem ascendente de fitness
      * Cortar os indivíduos com custo maior
      */
-    public void ordenarPorFitnessAscendente() {
+    public void ordenarPorFitnessCrescente() {
     	
     	Collections.sort(individuos, (Object o1, Object o2) -> {
             Cromossomo c1 = (Cromossomo) o1;

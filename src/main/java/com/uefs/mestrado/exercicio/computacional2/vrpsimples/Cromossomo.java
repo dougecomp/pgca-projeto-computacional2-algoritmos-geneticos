@@ -39,6 +39,7 @@ public class Cromossomo {
         this.veiculos = veiculos;
         this.gene = new GeneVRPC(inicio,clientes, veiculos);
         this.inicio = inicio;
+        
     }
     
     /**
@@ -53,6 +54,7 @@ public class Cromossomo {
     
     public void inicializarGenes(Random semente) {
         gene.inicializarValores(semente);
+        //calcularFitness();
     }
     
     /**

@@ -15,7 +15,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.swing.JFrame;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -51,12 +57,16 @@ public class VRP {
         metodoCruzamentoMutacao = 1;
         metodoSelecao = 1;
         
-        semente = new Random(valorSemente);
+        if(valorSemente != 0)
+            semente = new Random(valorSemente);
+        else
+            semente = new Random();
         
         try {
             getCasoTeste(this.arquivoCasoTeste, " ");
-        } catch(IOException e) {
+        } catch(Exception e) {
             System.out.println("Não foi possível ler arquivo do caso de teste.");
+            System.out.println(e.getMessage());
             System.exit(0);
         }
         
@@ -72,33 +82,23 @@ public class VRP {
         
         populacao = new Populacao(this.tamanhoPopulacao, this.clientes, this.veiculos);
         populacao.iniciarPopulacao(deposito, semente);
-        
-        int geracoes = 0;
-        while(geracoes < qtdGeracoes) {
+        //populacao.ordenarPorFitnessAscendente();
+        int geracoes = 1;
+        while(geracoes <= qtdGeracoes) {
 
-            ArrayList<Cromossomo> cromossomosSelecionados = new ArrayList<>();
-            if(metodoSelecao == 1) {
-                cromossomosSelecionados = selecionarCromossomosPorRoleta(populacao, populacao.getIndividuos().size());
-            } else if(metodoSelecao == 2) {
-                cromossomosSelecionados = selecionarCromossomosPorTorneio(populacao, populacao.getIndividuos().size());
-            }
+            ArrayList<Cromossomo> cromossomosSelecionados = selecionarIndividuos();
             
-            ArrayList<Cromossomo> resultCruzamento = new ArrayList<>();
-            if(metodoCruzamentoMutacao == 1) {
-                resultCruzamento = cruzamentoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
-            } else if(metodoCruzamentoMutacao == 2) {
-                resultCruzamento = cruzamentoDoisPontos((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
-            }
+            ArrayList<Cromossomo> resultCruzamento = aplicarOperadorRecombinacao(cromossomosSelecionados);
             
-            ArrayList<Cromossomo> resultMutacao = new ArrayList<>();
-            if(metodoCruzamentoMutacao == 1) {
-                resultMutacao = mutacaoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
-            } else if (metodoCruzamentoMutacao == 2) {
-                resultMutacao = mutacaoDoisPontos((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
-            }
+            //cromossomosSelecionados.addAll(resultCruzamento);
+            
+            ArrayList<Cromossomo> resultMutacao = aplicarOperadorMutacao(cromossomosSelecionados);
+            
+            //cromossomosSelecionados.addAll(resultMutacao);
 
             populacao.getIndividuos().addAll(resultCruzamento);
             populacao.getIndividuos().addAll(resultMutacao);
+            //populacao.getIndividuos().addAll(cromossomosSelecionados);
 
             descartarPiores();
             
@@ -107,8 +107,42 @@ public class VRP {
         
         }
 
+        plotaGrafico();
         //JOptionPane.showMessageDialog(null, s);*/
         
+    }
+
+    private ArrayList<Cromossomo> selecionarIndividuos() {
+        switch (this.metodoSelecao) {
+            case 1:
+                return selecionarCromossomosPorRoleta(populacao,populacao.getIndividuos().size());
+            case 2:
+                return selecionarCromossomosPorTorneio(populacao,populacao.getIndividuos().size());
+            default:
+                return new ArrayList<>();
+        }
+    }
+
+    private ArrayList<Cromossomo> aplicarOperadorRecombinacao(ArrayList<Cromossomo> selecionados) {
+        switch (this.metodoCruzamentoMutacao) {
+            case 1:
+                return cruzamentoUmPonto(selecionados);
+            case 2:
+                return cruzamentoDoisPontos(selecionados);
+            default:
+                return new ArrayList<>();
+        }
+    }
+    
+    private ArrayList<Cromossomo> aplicarOperadorMutacao(ArrayList<Cromossomo> selecionados) {
+        switch (this.metodoCruzamentoMutacao) {
+            case 1:
+                return mutacaoUmPonto(selecionados);
+            case 2:
+                return mutacaoDoisPontos(selecionados);
+            default:
+                return new ArrayList<>();
+        }
     }
     
     /**
@@ -122,15 +156,15 @@ public class VRP {
         ArrayList<Cromossomo> resultMutacao = new ArrayList<>();
 
         for(int i = 0; i < cromossomosSelecionados.size(); i++) {
-            
-            int ponto = semente.nextInt(cromossomosSelecionados.size() - 1);
-            Cromossomo individuo = cromossomosSelecionados.get(ponto);
 
-            if(semente.nextFloat() < taxaMutacao){
+            if(semente.nextFloat() <= taxaMutacao){
+                int ponto = semente.nextInt(cromossomosSelecionados.size());
+                Cromossomo individuo = new Cromossomo(clientes.size(), deposito, clientes, veiculos);
+                individuo.setGenes(cromossomosSelecionados.get(ponto).getGenes());
                 individuo.aplicarMutacaoUmPonto(semente);
+                resultMutacao.add(individuo);
             }
             
-            resultMutacao.add(individuo);
         }
         return resultMutacao;
     }
@@ -146,15 +180,15 @@ public class VRP {
         ArrayList<Cromossomo> resultMutacao = new ArrayList<>();
 
         for(int i = 0; i < cromossomosSelecionados.size(); i++) {
-            
-            int ponto = semente.nextInt(cromossomosSelecionados.size() - 1);
-            Cromossomo individuo = cromossomosSelecionados.get(ponto);
 
-            if(semente.nextFloat() < taxaMutacao){
+            if(semente.nextFloat() <= taxaMutacao) {
+                int ponto = semente.nextInt(cromossomosSelecionados.size());
+                Cromossomo individuo = new Cromossomo(clientes.size(), deposito, clientes, veiculos);
+                individuo.setGenes(cromossomosSelecionados.get(ponto).getGenes());
                 individuo.aplicarMutacaoDoisPontos(semente);
+                resultMutacao.add(individuo);
             }
             
-            resultMutacao.add(individuo);
         }
         return resultMutacao;
     }
@@ -173,14 +207,14 @@ public class VRP {
 
         int cont = 0;
         while (cont < qtdCruzamentos) {
-            Cromossomo pai = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size() - 1));
-            Cromossomo mae = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size() - 1));
+            Cromossomo pai = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size()));
+            Cromossomo mae = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size()));
 
             Cromossomo filho1 = new Cromossomo(clientes.size(),deposito,clientes,veiculos);
             Cromossomo filho2 = new Cromossomo(clientes.size(),deposito,clientes,veiculos);
 
-            ponto = semente.nextInt(pai.getTamanho()-1);
-            if(semente.nextFloat() > taxaCruzamento) {
+            ponto = semente.nextInt(clientes.size());
+            if(semente.nextFloat() <= taxaCruzamento) {
                 for (int i = 0; i < clientes.size(); i++) {
                     if (i < ponto) {
                         filho1.getGenes().getSolucao().add(i, pai.getGenes().getSolucao().get(i));
@@ -214,18 +248,21 @@ public class VRP {
 
         int cont = 0;
         while (cont < qtdCruzamentos) {
-            Cromossomo pai = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size() - 1));
-            Cromossomo mae = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size() - 1));
+            Cromossomo pai = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size()));
+            Cromossomo mae = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size()));
 
             Cromossomo filho1 = new Cromossomo(clientes.size(),deposito,clientes,veiculos);
             Cromossomo filho2 = new Cromossomo(clientes.size(),deposito,clientes,veiculos);
 
-            pontoUm = semente.nextInt(pai.getTamanho()-1);
-            pontoDois = semente.nextInt(pai.getTamanho()-1);
-            while(pontoUm == pontoDois && pontoDois < pontoUm) {
-                pontoDois = semente.nextInt(pai.getTamanho()-1);
+            pontoUm = semente.nextInt(clientes.size());
+            pontoDois = semente.nextInt(clientes.size());
+            while(pontoUm == pontoDois || pontoDois <= pontoUm) {
+                if(pontoDois <= pontoUm) {
+                    pontoUm = semente.nextInt(clientes.size());
+                }
+                pontoDois = semente.nextInt(clientes.size());
             }
-            if(semente.nextFloat() > taxaCruzamento) {
+            if(semente.nextFloat() <= taxaCruzamento) {
                 for (int i = 0; i < clientes.size(); i++) {
                     if ( i < pontoUm || i >= pontoDois ) {
                         filho1.getGenes().getSolucao().add(i, pai.getGenes().getSolucao().get(i));
@@ -287,18 +324,24 @@ public class VRP {
 
         ArrayList<Cromossomo> cromossomosSelecionados = new ArrayList<>();
         
-        // Seleciona aleatoriamente indivíduos da população
-        for (int i = 0; i < qtdSele; i++) {
-            cromossomosSelecionados.add(populacao.getIndividuos().get(semente.nextInt(populacao.getIndividuos().size() - 1)));
+        // Seleciona dois indivíduos aleatoriamente para disputar
+        for (int i = 0; i < qtdSele/2; i++) {
+            Cromossomo primeiro = populacao.getIndividuos().get(semente.nextInt(populacao.getIndividuos().size()));
+            Cromossomo segundo = populacao.getIndividuos().get(semente.nextInt(populacao.getIndividuos().size()));
+            if(primeiro.calcularFitness() > segundo.calcularFitness()) {
+                cromossomosSelecionados.add(primeiro);
+            } else {
+                cromossomosSelecionados.add(segundo);
+            }
         }
         Populacao populacaoIntermediaria = new Populacao(this.tamanhoPopulacao, this.clientes, this.veiculos);
         populacaoIntermediaria.setIndividuos(cromossomosSelecionados);
-        populacaoIntermediaria.ordenarPorFitnessAscendente();
+        for (Cromossomo individuo : populacaoIntermediaria.getIndividuos()) {
+            individuo.calcularFitness();
+        }
+        populacaoIntermediaria.ordenarPorFitnessCrescente();
 
-        List<Cromossomo> subList = populacaoIntermediaria.getIndividuos().subList(0, (int) Math.ceil(qtdSele/2));
-        ArrayList<Cromossomo> temp = new ArrayList<>();
-        temp.addAll(subList);
-        return temp;
+        return (ArrayList<Cromossomo>) populacaoIntermediaria.getIndividuos();
     }
     
     /**
@@ -307,7 +350,7 @@ public class VRP {
      * 
      */
     public void descartarPiores() {
-        populacao.ordenarPorFitnessAscendente();
+        populacao.ordenarPorFitnessCrescente();
 
         for (int i = populacao.getIndividuos().size() - 1; i >= populacao.getTamanhoPopulacao(); i--) {
             populacao.getIndividuos().remove(i);
@@ -322,7 +365,7 @@ public class VRP {
      */
     public Cromossomo getMelhorResultado() {
 
-        populacao.ordenarPorFitnessAscendente();
+        populacao.ordenarPorFitnessCrescente();
 
         return populacao.getIndividuos().get(0);
 
@@ -387,6 +430,27 @@ public class VRP {
         
         reader.close();
         
+    }
+    
+    /**
+     * Plotar gráfico do melhor indivíduo
+     */
+    public void plotaGrafico() {
+
+        XYSeriesCollection series = new XYSeriesCollection();
+        series.addSeries(dados);
+
+        JFreeChart grafico = ChartFactory.createXYLineChart("Melhor Indivíduo",
+                "Gerações",
+                "Valor do Cromossomo do melhor indivíduo",
+                series, PlotOrientation.VERTICAL, true, true, true);
+
+        ChartPanel panel = new ChartPanel(grafico);
+        JFrame frame = new JFrame();
+        frame.setSize(640, 480);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.getContentPane().add(panel);
+        frame.setVisible(true);
     }
 
     public Populacao getPopulacao() {

@@ -17,23 +17,24 @@ import java.util.List;
 public class TesteVRP {
     
     static String estudante = "douglas";
+    static String caminhoArquivo = "casos-teste/teste";
     
     public static VRP rodar() {
         
-        String arquivoCasoTeste = "casos-teste/teste"+estudante;
+        String arquivoCasoTeste = caminhoArquivo+estudante;
         arquivoCasoTeste += ".txt";
         
         int tamanhoPopulacao = 100;
-        int quantidadeGeracoes = 500; // Critério de parada
+        int quantidadeGeracoes = 100; // Critério de parada
         
-        float taxaCruzamento = 0.8f;
+        float taxaCruzamento = 0.7f;
         float taxaMutacao = 0.1f;
         
-        long valorSemente = (long) 50;
+        long valorSemente = (long) -50;
         
         VRP algoritmo = new VRP(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao, valorSemente);
         algoritmo.setMetodoCruzamentoMutacao(1); // 1 - Um ponto, 2 - Dois pontos
-        algoritmo.setMetodoSelecao(1); // 1 - Roleta, 2 - Torneio
+        algoritmo.setMetodoSelecao(2); // 1 - Roleta, 2 - Torneio
         algoritmo.executar();
         
         String s = arquivoCasoTeste+" "+algoritmo.getMelhorResultado().calcularFitness();
@@ -43,7 +44,7 @@ public class TesteVRP {
 
     public static void main(String[] args) {
         
-        String arquivoCasoTeste = "teste"+estudante;
+        String arquivoCasoTeste = caminhoArquivo+estudante;
         arquivoCasoTeste += ".txt";
         
         int tamanhoPopulacao = 100;

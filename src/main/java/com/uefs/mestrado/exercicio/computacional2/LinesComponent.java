@@ -1,7 +1,6 @@
 package com.uefs.mestrado.exercicio.computacional2;
 
 import com.uefs.mestrado.exercicio.computacional2.vrpc.GeneVRPC;
-import com.uefs.mestrado.exercicio.computacional2.vrpsimples.Gene;
 import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRP;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -79,7 +78,7 @@ public class LinesComponent extends JComponent{
         
         JFrame testFrame = new JFrame();
         testFrame.setTitle("Exercicio Computacional 2 - PGCA009");
-        testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final LinesComponent comp = new LinesComponent();
         comp.setPreferredSize(new Dimension(500, 500));
         testFrame.getContentPane().add(comp, BorderLayout.CENTER);
@@ -135,7 +134,7 @@ public class LinesComponent extends JComponent{
     
     public static void teste() {
         JFrame testFrame = new JFrame();
-        testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final LinesComponent comp = new LinesComponent();
         comp.setPreferredSize(new Dimension(500, 500));
         testFrame.getContentPane().add(comp, BorderLayout.CENTER);

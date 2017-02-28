@@ -42,7 +42,7 @@ public class GeneVRPC extends Gene {
                         distancia = Math.sqrt(Math.pow(inicio.getX() - clientes.get(j).getX(), 2) + Math.pow(inicio.getY() - clientes.get(j).getY(), 2)); // distância euclidiana
                         demandas[i] += clientes.get(j).getDemanda();
                         
-                    } else if( (j + 1) == clientes.size() ) { // Último cliente, então calcular distância do ultimo cliente para o inicio
+                    } else if( (j + 1) == clientes.size() ) { // Último cliente, então calcular distância do ultimo cliente visitado até esse e depois para o depósito
                         
                         distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - inicio.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - inicio.getY(), 2)); // distância euclidiana;
                         if(demandas[i] > veiculos.get(i).getCapacidade()) { // Se a demanda ficou maior do que a capacidade do veículo i, então aplica-se uma penalidade no cálculo do custo devido a ter gerado uma solução infactível
@@ -79,6 +79,14 @@ public class GeneVRPC extends Gene {
         for (int i = 0; i < demandas.length; i++) {
             demandas[i] = 0;
         }
+    }
+
+    public double[] getDemandas() {
+        return demandas;
+    }
+
+    public void setDemandas(double[] demandas) {
+        this.demandas = demandas;
     }
     
 }
