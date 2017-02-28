@@ -16,8 +16,10 @@ import java.util.List;
  */
 public class TesteVRP {
     
+    static String estudante = "douglas";
+    
     public static VRP rodar() {
-        String estudante = "abraao";
+        
         String arquivoCasoTeste = "casos-teste/teste"+estudante;
         arquivoCasoTeste += ".txt";
         
@@ -40,7 +42,7 @@ public class TesteVRP {
     }
 
     public static void main(String[] args) {
-        String estudante = "abraao";
+        
         String arquivoCasoTeste = "teste"+estudante;
         arquivoCasoTeste += ".txt";
         

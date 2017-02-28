@@ -73,6 +73,7 @@ public class LinesComponent extends JComponent{
     public static void iniciar() {
         
         JFrame testFrame = new JFrame();
+        testFrame.setTitle("Exercicio Computacional 2 - PGCA009");
         testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         final LinesComponent comp = new LinesComponent();
         comp.setPreferredSize(new Dimension(500, 500));
