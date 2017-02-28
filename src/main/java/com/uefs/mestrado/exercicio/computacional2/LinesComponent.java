@@ -58,7 +58,11 @@ public class LinesComponent extends JComponent{
         super.paintComponent(g);
         for (Line line : lines) {
             g.setColor(line.color);
+            
+            // Linha da rota
             g.drawLine(line.x1, line.y1, line.x2, line.y2);
+            
+            // Círculos representando os clientes/depósito
             g.drawOval(line.x1, line.y1-5, 10, 10);
             g.drawOval(line.x2, line.y2-5, 10, 10);
             
