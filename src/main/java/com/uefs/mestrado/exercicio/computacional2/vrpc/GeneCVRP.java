@@ -16,12 +16,12 @@ import java.util.Random;
  *
  * @author douglas
  */
-public class GeneVRPC extends Gene {
+public class GeneCVRP extends Gene {
     
     private double[] demandas;
     private boolean infactivel;
     
-    public GeneVRPC(Ponto inicio, List<Cliente> clientes, List<Veiculo> veiculos) {
+    public GeneCVRP(Ponto inicio, List<Cliente> clientes, List<Veiculo> veiculos) {
         super(inicio, clientes, veiculos);
         infactivel = false;
     }

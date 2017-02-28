@@ -1,6 +1,6 @@
 package com.uefs.mestrado.exercicio.computacional2;
 
-import com.uefs.mestrado.exercicio.computacional2.vrpc.GeneVRPC;
+import com.uefs.mestrado.exercicio.computacional2.vrpc.GeneCVRP;
 import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRP;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -90,7 +90,7 @@ public class LinesComponent extends JComponent{
         testFrame.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
         executeButton.addActionListener((ActionEvent e) -> {
             VRP algoritmo = TesteVRP.rodar();
-            GeneVRPC melhor = algoritmo.getMelhorResultado().getGenes();
+            GeneCVRP melhor = algoritmo.getMelhorResultado().getGenes();
             List<List<Ponto>> rotas = melhor.getRotas();
             int k = 0;
             double custoCompleto = 0;

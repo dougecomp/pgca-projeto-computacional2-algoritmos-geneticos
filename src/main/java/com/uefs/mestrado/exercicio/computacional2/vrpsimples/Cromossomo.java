@@ -8,7 +8,7 @@ package com.uefs.mestrado.exercicio.computacional2.vrpsimples;
 import com.uefs.mestrado.exercicio.computacional2.Cliente;
 import com.uefs.mestrado.exercicio.computacional2.Ponto;
 import com.uefs.mestrado.exercicio.computacional2.Veiculo;
-import com.uefs.mestrado.exercicio.computacional2.vrpc.GeneVRPC;
+import com.uefs.mestrado.exercicio.computacional2.vrpc.GeneCVRP;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +20,7 @@ public class Cromossomo {
     
     private int tamanho;
     private double fitness;
-    private GeneVRPC gene;
+    private GeneCVRP gene;
     private final Ponto inicio;
     private final List<Cliente> clientes;
     private final List<Veiculo> veiculos;
@@ -37,7 +37,7 @@ public class Cromossomo {
         this.tamanho = tamanho;
         this.clientes = clientes;
         this.veiculos = veiculos;
-        this.gene = new GeneVRPC(inicio,clientes, veiculos);
+        this.gene = new GeneCVRP(inicio,clientes, veiculos);
         this.inicio = inicio;
         
     }
@@ -83,11 +83,11 @@ public class Cromossomo {
         this.tamanho = tamanho;
     }
 
-    public GeneVRPC getGenes() {
+    public GeneCVRP getGenes() {
         return gene;
     }
 
-    public void setGenes(GeneVRPC gene) {
+    public void setGenes(GeneCVRP gene) {
         this.gene = gene;
     }
     
