@@ -26,15 +26,15 @@ public class TesteVRP {
         int tamanhoPopulacao = 100;
         int quantidadeGeracoes = 500; // Critério de parada
         
-        float taxaCruzamento = 0.9f;
-        float taxaMutacao = 0.05f;
+        float taxaCruzamento = 0.8f;
+        float taxaMutacao = 0.1f;
         
         long valorSemente = (long) 50;
         
         VRP algoritmo = new VRP(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao, valorSemente);
+        algoritmo.setMetodoCruzamentoMutacao(1); // 1 - Um ponto, 2 - Dois pontos
+        algoritmo.setMetodoSelecao(1); // 1 - Roleta, 2 - Torneio
         algoritmo.executar();
-        
-        Populacao p = algoritmo.getPopulacao();
         
         String s = arquivoCasoTeste+" "+algoritmo.getMelhorResultado().calcularFitness();
         System.out.println(s);
@@ -56,8 +56,6 @@ public class TesteVRP {
         
         VRP algoritmo = new VRP(arquivoCasoTeste, tamanhoPopulacao, quantidadeGeracoes, taxaCruzamento, taxaMutacao, valorSemente);
         algoritmo.executar();
-        
-        Populacao p = algoritmo.getPopulacao();
         
         String s = arquivoCasoTeste+" "+algoritmo.getMelhorResultado().calcularFitness();
         System.out.println(s);

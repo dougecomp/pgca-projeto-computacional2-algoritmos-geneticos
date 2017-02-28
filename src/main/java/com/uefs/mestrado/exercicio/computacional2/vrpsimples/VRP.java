@@ -36,6 +36,8 @@ public class VRP {
     private int qtdClientes;
     private int tamanhoPopulacao;
     private Random semente;
+    private int metodoCruzamentoMutacao;
+    private int metodoSelecao;
     
     public VRP(String arquivoCasoTeste, int tamPop, int qtdGer, float txCruz, float txMut, long valorSemente) {
         
@@ -46,6 +48,8 @@ public class VRP {
         tamanhoPopulacao = tamPop;
         clientes = new ArrayList<>();
         veiculos = new ArrayList<>();
+        metodoCruzamentoMutacao = 1;
+        metodoSelecao = 1;
         
         semente = new Random(valorSemente);
         
@@ -72,9 +76,26 @@ public class VRP {
         int geracoes = 0;
         while(geracoes < qtdGeracoes) {
 
-            ArrayList<Cromossomo> cromossomosSelecionados = selecionarCromossomosPorRoleta(populacao, populacao.getIndividuos().size());
-            ArrayList<Cromossomo> resultCruzamento = cruzamentoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
-            ArrayList<Cromossomo> resultMutacao = mutacaoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
+            ArrayList<Cromossomo> cromossomosSelecionados = new ArrayList<>();
+            if(metodoSelecao == 1) {
+                cromossomosSelecionados = selecionarCromossomosPorRoleta(populacao, populacao.getIndividuos().size());
+            } else if(metodoSelecao == 2) {
+                cromossomosSelecionados = selecionarCromossomosPorTorneio(populacao, populacao.getIndividuos().size());
+            }
+            
+            ArrayList<Cromossomo> resultCruzamento = new ArrayList<>();
+            if(metodoCruzamentoMutacao == 1) {
+                resultCruzamento = cruzamentoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
+            } else if(metodoCruzamentoMutacao == 2) {
+                resultCruzamento = cruzamentoDoisPontos((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
+            }
+            
+            ArrayList<Cromossomo> resultMutacao = new ArrayList<>();
+            if(metodoCruzamentoMutacao == 1) {
+                resultMutacao = mutacaoUmPonto((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
+            } else if (metodoCruzamentoMutacao == 2) {
+                resultMutacao = mutacaoDoisPontos((ArrayList<Cromossomo>)cromossomosSelecionados.clone());
+            }
 
             populacao.getIndividuos().addAll(resultCruzamento);
             populacao.getIndividuos().addAll(resultMutacao);
@@ -106,7 +127,7 @@ public class VRP {
             Cromossomo individuo = cromossomosSelecionados.get(ponto);
 
             if(semente.nextFloat() < taxaMutacao){
-                individuo.aplicarMutacao(semente);
+                individuo.aplicarMutacaoUmPonto(semente);
             }
             
             resultMutacao.add(individuo);
@@ -114,6 +135,30 @@ public class VRP {
         return resultMutacao;
     }
 
+    /**
+    * Realiza a mutação em um determinado ponto aleatorio para uma determinada
+    * taxa de mutação. A mutação não pode alterar nem o início nem o fim da rota.
+    * @param cromossomosSelecionados
+    * @return
+    */
+    public ArrayList<Cromossomo> mutacaoDoisPontos(ArrayList<Cromossomo> cromossomosSelecionados) {
+
+        ArrayList<Cromossomo> resultMutacao = new ArrayList<>();
+
+        for(int i = 0; i < cromossomosSelecionados.size(); i++) {
+            
+            int ponto = semente.nextInt(cromossomosSelecionados.size() - 1);
+            Cromossomo individuo = cromossomosSelecionados.get(ponto);
+
+            if(semente.nextFloat() < taxaMutacao){
+                individuo.aplicarMutacaoDoisPontos(semente);
+            }
+            
+            resultMutacao.add(individuo);
+        }
+        return resultMutacao;
+    }
+    
     /**
      * Realiza o cruzamento em um determinado ponto aleatorio para uma determinada
      * taxa de cruzamento.
@@ -141,6 +186,51 @@ public class VRP {
                         filho1.getGenes().getSolucao().add(i, pai.getGenes().getSolucao().get(i));
                         filho2.getGenes().getSolucao().add(i, mae.getGenes().getSolucao().get(i));
                     } else {
+                        filho1.getGenes().getSolucao().add(i,mae.getGenes().getSolucao().get(i));
+                        filho2.getGenes().getSolucao().add(i,pai.getGenes().getSolucao().get(i));
+                    }
+                }
+                filhos.add(filho1);
+                filhos.add(filho2);
+            }
+            cont++;
+        }
+        return filhos;
+
+    }
+    
+    /**
+     * Realiza o cruzamento em um determinado ponto aleatorio para uma determinada
+     * taxa de cruzamento.
+     * @param cromossomosSelecionados
+     * @return
+     */
+    public ArrayList<Cromossomo> cruzamentoDoisPontos(ArrayList<Cromossomo> cromossomosSelecionados) {
+
+        ArrayList<Cromossomo> filhos = new ArrayList<>();
+        int qtdCruzamentos = cromossomosSelecionados.size();
+        int pontoUm;
+        int pontoDois;
+
+        int cont = 0;
+        while (cont < qtdCruzamentos) {
+            Cromossomo pai = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size() - 1));
+            Cromossomo mae = cromossomosSelecionados.get(semente.nextInt(cromossomosSelecionados.size() - 1));
+
+            Cromossomo filho1 = new Cromossomo(clientes.size(),deposito,clientes,veiculos);
+            Cromossomo filho2 = new Cromossomo(clientes.size(),deposito,clientes,veiculos);
+
+            pontoUm = semente.nextInt(pai.getTamanho()-1);
+            pontoDois = semente.nextInt(pai.getTamanho()-1);
+            while(pontoUm == pontoDois && pontoDois < pontoUm) {
+                pontoDois = semente.nextInt(pai.getTamanho()-1);
+            }
+            if(semente.nextFloat() > taxaCruzamento) {
+                for (int i = 0; i < clientes.size(); i++) {
+                    if ( i < pontoUm || i >= pontoDois ) {
+                        filho1.getGenes().getSolucao().add(i, pai.getGenes().getSolucao().get(i));
+                        filho2.getGenes().getSolucao().add(i, mae.getGenes().getSolucao().get(i));
+                    } else if( i >= pontoUm && i < pontoDois ) {
                         filho1.getGenes().getSolucao().add(i,mae.getGenes().getSolucao().get(i));
                         filho2.getGenes().getSolucao().add(i,pai.getGenes().getSolucao().get(i));
                     }
@@ -185,6 +275,30 @@ public class VRP {
          }
 
         return cromossomosSelecionados;
+    }
+    
+    /**
+     * Selecionar Cromossomos(individuos) para o possivel cruzamento ou mutação através do método de torneio
+     * @param populacao
+     * @param qtdSele: tamanho da populacao
+     * @return
+     */
+    public ArrayList<Cromossomo> selecionarCromossomosPorTorneio(Populacao populacao, int qtdSele) {
+
+        ArrayList<Cromossomo> cromossomosSelecionados = new ArrayList<>();
+        
+        // Seleciona aleatoriamente indivíduos da população
+        for (int i = 0; i < qtdSele; i++) {
+            cromossomosSelecionados.add(populacao.getIndividuos().get(semente.nextInt(populacao.getIndividuos().size() - 1)));
+        }
+        Populacao populacaoIntermediaria = new Populacao(this.tamanhoPopulacao, this.clientes, this.veiculos);
+        populacaoIntermediaria.setIndividuos(cromossomosSelecionados);
+        populacaoIntermediaria.ordenarPorFitnessAscendente();
+
+        List<Cromossomo> subList = populacaoIntermediaria.getIndividuos().subList(0, (int) Math.ceil(qtdSele/2));
+        ArrayList<Cromossomo> temp = new ArrayList<>();
+        temp.addAll(subList);
+        return temp;
     }
     
     /**
@@ -251,7 +365,7 @@ public class VRP {
         this.qtdClientes = Integer.parseInt(line);
         i = 0;
         line = reader.readLine();
-        while(i < this.qtdClientes) { // captura das coordenadas do depósito, dos clientes e demandas
+        while(i < this.qtdClientes+1) { // captura das coordenadas do depósito, dos clientes e demandas
             int x;
             int y;
             int demanda;
@@ -342,6 +456,21 @@ public class VRP {
     public void setQtdClientes(int qtdClientes) {
         this.qtdClientes = qtdClientes;
     }
-    
-    
+
+    public int getMetodoCruzamentoMutacao() {
+        return metodoCruzamentoMutacao;
+    }
+
+    public void setMetodoCruzamentoMutacao(int metodoCruzamentoMutacao) {
+        this.metodoCruzamentoMutacao = metodoCruzamentoMutacao;
+    }
+
+    public int getMetodoSelecao() {
+        return metodoSelecao;
+    }
+
+    public void setMetodoSelecao(int metodoSelecao) {
+        this.metodoSelecao = metodoSelecao;
+    }
+        
 }

@@ -60,8 +60,17 @@ public class Cromossomo {
      * 
      * @param semente 
      */
-    public void aplicarMutacao(Random semente) {
-        gene.aplicarMutacao(semente);
+    public void aplicarMutacaoUmPonto(Random semente) {
+        gene.aplicarMutacaoUmPonto(semente);
+    }
+    
+    /**
+     * Chamar método do gene para fazer uma permutação entre dois veículos
+     * 
+     * @param semente 
+     */
+    public void aplicarMutacaoDoisPontos(Random semente) {
+        gene.aplicarMutacaoDoisPontos(semente);
     }
 
     public int getTamanho() {
@@ -72,7 +81,7 @@ public class Cromossomo {
         this.tamanho = tamanho;
     }
 
-    public Gene getGenes() {
+    public GeneVRPC getGenes() {
         return gene;
     }
 

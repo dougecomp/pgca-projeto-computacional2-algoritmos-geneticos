@@ -98,7 +98,7 @@ public class Gene {
      * 
      * @param semente 
      */
-    public void aplicarMutacao(Random semente) {
+    public void aplicarMutacaoUmPonto(Random semente) {
         int primeiro = semente.nextInt(veiculos.size());
         int segundo = semente.nextInt(veiculos.size());
         
@@ -109,6 +109,35 @@ public class Gene {
         Veiculo tmp = solucao.get(primeiro); // Guarda o primeiro temporariamente
         solucao.set(primeiro, solucao.get(segundo)); // Coloca o segundo no primeiro
         solucao.set(segundo, tmp); // Guarda o temporário do primeiro no segundo
+        
+    }
+    
+    /**
+     * Fazer alguma permutação no vetor de veiculos da SOLUÇÃO
+     * 
+     * @param semente 
+     */
+    public void aplicarMutacaoDoisPontos(Random semente) {
+        int primeiro = semente.nextInt(veiculos.size());
+        int segundo = semente.nextInt(veiculos.size());
+        int terceiro = semente.nextInt(veiculos.size());
+        int quarto = semente.nextInt(veiculos.size());
+        
+        while(primeiro == segundo) {
+            segundo = semente.nextInt(veiculos.size());
+        }
+        
+        while(terceiro == quarto) {
+            quarto = semente.nextInt(veiculos.size());
+        }
+        
+        Veiculo tmp = solucao.get(primeiro); // Guarda o primeiro temporariamente
+        solucao.set(primeiro, solucao.get(segundo)); // Coloca o segundo no primeiro
+        solucao.set(segundo, tmp); // Guarda o temporário do primeiro no segundo
+        
+        tmp = solucao.get(terceiro); // Guarda o primeiro temporariamente
+        solucao.set(terceiro, solucao.get(quarto)); // Coloca o segundo no primeiro
+        solucao.set(quarto, tmp); // Guarda o temporário do primeiro no segundo
         
     }
     

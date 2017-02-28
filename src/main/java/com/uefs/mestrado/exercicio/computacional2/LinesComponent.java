@@ -1,5 +1,6 @@
 package com.uefs.mestrado.exercicio.computacional2;
 
+import com.uefs.mestrado.exercicio.computacional2.vrpc.GeneVRPC;
 import com.uefs.mestrado.exercicio.computacional2.vrpsimples.Gene;
 import com.uefs.mestrado.exercicio.computacional2.vrpsimples.VRP;
 import java.awt.BorderLayout;
@@ -90,7 +91,7 @@ public class LinesComponent extends JComponent{
         testFrame.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
         executeButton.addActionListener((ActionEvent e) -> {
             VRP algoritmo = TesteVRP.rodar();
-            Gene melhor = algoritmo.getMelhorResultado().getGenes();
+            GeneVRPC melhor = algoritmo.getMelhorResultado().getGenes();
             List<List<Ponto>> rotas = melhor.getRotas();
             int k = 0;
             double custoCompleto = 0;
@@ -117,9 +118,9 @@ public class LinesComponent extends JComponent{
                         totalDemandas += demanda;
                     }
                 }
-                int indice = rotas.indexOf(rota);
-                System.out.println("Custo total da rota "+indice+": "+totalCusto);
-                System.out.println("Demanda total da rota "+indice+": "+totalDemandas+" de ("+melhor.getVeiculos().get(indice).getCapacidade()+")");
+                //int indice = rotas.indexOf(rota);
+                System.out.println("Custo total da rota "+k+": "+totalCusto);
+                System.out.println("Demanda total da rota "+k+": "+totalDemandas+" de ("+melhor.getVeiculos().get(k).getCapacidade()+")");
                 k++;
             }
             System.out.println("Custo total de TODAS AS ROTAS: "+custoCompleto);

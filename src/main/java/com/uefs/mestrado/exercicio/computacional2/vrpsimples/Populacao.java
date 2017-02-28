@@ -45,7 +45,7 @@ public class Populacao {
             cromossomo.inicializarGenes(semente);
             individuos.add(cromossomo);
         }
-        
+
     }
     
     /**
