@@ -105,7 +105,7 @@ public class LinesComponent extends JComponent{
                         int y1 = (int) (rota.get(i).getY());
                         int y2 = (int) (rota.get(i+1).getY());
                         int demanda = 0;
-                        double distancia = getDistanciaEuclidiana(rota.get(i), rota.get(i+1));
+                        double distancia = Utils.getDistanciaEuclidiana(rota.get(i), rota.get(i+1));
                         String label = "" + String.format("%.2f", distancia) + "";
                         if (rota.get(i) instanceof Cliente) {
                             Cliente c = (Cliente) rota.get(i);
@@ -118,11 +118,11 @@ public class LinesComponent extends JComponent{
                     }
                 }
                 //int indice = rotas.indexOf(rota);
-                System.out.println("Custo total da rota "+k+": "+totalCusto);
-                System.out.println("Demanda total da rota "+k+": "+totalDemandas+" de ("+melhor.getVeiculos().get(k).getCapacidade()+")");
+                //System.out.println("Custo total da rota "+k+": "+totalCusto);
+                //System.out.println("Demanda total da rota "+k+": "+totalDemandas+" de ("+melhor.getVeiculos().get(k).getCapacidade()+")");
                 k++;
             }
-            System.out.println("Custo total de TODAS AS ROTAS: "+custoCompleto);
+            //System.out.println("Custo total de TODAS AS ROTAS: "+custoCompleto);
         });
         botaoLimpar.addActionListener((ActionEvent e) -> {
             comp.clearLines();
@@ -157,12 +157,6 @@ public class LinesComponent extends JComponent{
         });
         testFrame.pack();
         testFrame.setVisible(true);
-    }
-
-    public static double getDistanciaEuclidiana(Ponto p, Ponto q) {
-        double distancia;
-        distancia = Math.sqrt(Math.pow(p.getX() - q.getX(), 2) + Math.pow(p.getY() - q.getY(), 2)); // distância euclidiana;
-        return distancia;
     }
     
     public static void main(String[] args) {

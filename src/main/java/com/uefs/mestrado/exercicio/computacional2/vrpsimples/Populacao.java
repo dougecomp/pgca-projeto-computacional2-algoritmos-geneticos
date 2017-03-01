@@ -91,6 +91,14 @@ public class Populacao {
             System.out.println(individuo.calcularFitness());
         }
     }
+    
+    public double getFitnessMedio() {
+        double soma = 0;
+        for (Cromossomo individuo : individuos) {
+            soma += individuo.calcularFitness();
+        }
+        return soma/individuos.size();
+    }
 
     public List<Cromossomo> getIndividuos() {
         return individuos;

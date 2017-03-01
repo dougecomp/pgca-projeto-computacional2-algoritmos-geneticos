@@ -7,6 +7,7 @@ package com.uefs.mestrado.exercicio.computacional2.vrpc;
 
 import com.uefs.mestrado.exercicio.computacional2.Cliente;
 import com.uefs.mestrado.exercicio.computacional2.Ponto;
+import com.uefs.mestrado.exercicio.computacional2.Utils;
 import com.uefs.mestrado.exercicio.computacional2.Veiculo;
 import com.uefs.mestrado.exercicio.computacional2.vrpsimples.Gene;
 import java.util.List;
@@ -45,13 +46,13 @@ public class GeneCVRP extends Gene {
                     
                     if( custosParciais[i] == 0 ) { // distância do depósito para o primeiro cliente
                         
-                        distancia = getDistanciaEuclidiana(inicio, clienteAtual);
+                        distancia = Utils.getDistanciaEuclidiana(inicio, clienteAtual);
                         //distancia = Math.sqrt(Math.pow(inicio.getX() - clienteAtual.getX(), 2) + Math.pow(inicio.getY() - clienteAtual.getY(), 2)); // distância euclidiana
                         demandas[i] += clienteAtual.getDemanda();
                         
                     } else if( (j + 1) == clientes.size() ) { // Último cliente, então calcular distância dele ate o depósito
                         
-                        distancia = getDistanciaEuclidiana(ultimoClienteVisitado, inicio);
+                        distancia = Utils.getDistanciaEuclidiana(ultimoClienteVisitado, inicio);
                         //distancia += getDistanciaEuclidiana(clienteAtual, inicio);
                         //distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - inicio.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - inicio.getY(), 2)); // distância euclidiana;
                         if(demandas[i] > veiculos.get(i).getCapacidade()) { // Se a demanda ficou maior do que a capacidade do veículo i, então aplica-se uma penalidade no cálculo do custo devido a ter gerado uma solução infactível
@@ -61,7 +62,7 @@ public class GeneCVRP extends Gene {
                         
                     } else { // No meio da rota. Calcular distância entre o cliente anterior para o atual
                         
-                        distancia = getDistanciaEuclidiana(ultimoClienteVisitado, clienteAtual);
+                        distancia = Utils.getDistanciaEuclidiana(ultimoClienteVisitado, clienteAtual);
                         //distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - clienteAtual.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - clienteAtual.getY(), 2)); // distância euclidiana;
                         demandas[i] += clienteAtual.getDemanda();
                         
@@ -72,7 +73,7 @@ public class GeneCVRP extends Gene {
                     ultimoClienteVisitado = clienteAtual;
                     
                 } else if( (j + 1) == clientes.size() && custosParciais[i] > 0 && ultimoClienteVisitado != null ) { // Caso tenha visitado algum cliente, volte para o inicio
-                    distancia = getDistanciaEuclidiana(ultimoClienteVisitado, inicio);
+                    distancia = Utils.getDistanciaEuclidiana(ultimoClienteVisitado, inicio);
                     //distancia = Math.sqrt(Math.pow(ultimoClienteVisitado.getX() - inicio.getX(), 2) + Math.pow(ultimoClienteVisitado.getY() - inicio.getY() , 2)); // distância euclidiana
                     if (demandas[i] > veiculos.get(i).getCapacidade()) { // Se a demanda ficou maior do que a capacidade do veículo i, então aplica-se uma penalidade no cálculo do custo devido a ter gerado uma solução infactível
                         distancia *= 1000;

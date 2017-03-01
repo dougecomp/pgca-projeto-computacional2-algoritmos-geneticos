@@ -34,7 +34,6 @@ public class VRP {
     private float taxaMutacao;
     private float taxaCruzamento;
     private int qtdGeracoes;
-    private final XYSeries dados;
     private Ponto deposito;
     private List<Cliente> clientes;
     private List<Veiculo> veiculos;
@@ -67,12 +66,10 @@ public class VRP {
         try {
             getCasoTeste(this.arquivoCasoTeste, " ");
         } catch(Exception e) {
-            System.out.println("Não foi possível ler arquivo do caso de teste.");
-            System.out.println(e.getMessage());
+            System.out.println("Não foi possível ler arquivo do caso de teste: "+this.arquivoCasoTeste);
+            //System.out.println(e.getMessage());
             System.exit(0);
         }
-        
-        dados = new XYSeries("Melhor Indivíduo");
         
     }
     
@@ -84,7 +81,9 @@ public class VRP {
         
         populacao = new Populacao(this.tamanhoPopulacao, this.clientes, this.veiculos);
         populacao.iniciarPopulacao(deposito, semente);
-        //populacao.ordenarPorFitnessAscendente();
+        XYSeries mediaIndividuos = new XYSeries("Fitness Médio dos indivíduos");
+        XYSeries dados = new XYSeries("Melhor Indivíduo");
+        
         int geracoes = 1;
         while(geracoes <= qtdGeracoes) {
 
@@ -104,12 +103,17 @@ public class VRP {
 
             descartarPiores();
             
+            mediaIndividuos.add(geracoes, populacao.getFitnessMedio());
             dados.add(geracoes, populacao.getIndividuos().get(0).calcularFitness());
             geracoes++;
         
         }
 
-        plotaGrafico();
+        XYSeries[] pontos = new XYSeries[2];
+        pontos[0] = dados;
+        pontos[1] = mediaIndividuos;
+        //plotaGrafico("Melhor Indivíduo: "+arquivoCasoTeste.split("/")[1]);
+        plotarGraficoMulti(pontos, "Melhor Indivíduo: "+arquivoCasoTeste.split("/")[1], "Gerações", "Aptidão");
         //JOptionPane.showMessageDialog(null, s);*/
         
     }
@@ -434,25 +438,27 @@ public class VRP {
         
     }
     
-    /**
-     * Plotar gráfico do melhor indivíduo
-     */
-    public void plotaGrafico() {
-
+    public void plotarGraficoMulti(XYSeries pontos[], String tituloGrafico, String nomeEixoX, String nomeEixoY) {
+        
         XYSeriesCollection series = new XYSeriesCollection();
-        series.addSeries(dados);
+        for (XYSeries ponto : pontos) {
+            series.addSeries(ponto);
+        }
 
-        JFreeChart grafico = ChartFactory.createXYLineChart("Melhor Indivíduo",
-                "Gerações",
-                "Valor do Cromossomo do melhor indivíduo",
-                series, PlotOrientation.VERTICAL, true, true, true);
+        JFreeChart grafico = ChartFactory.createXYLineChart(
+            tituloGrafico,
+            nomeEixoX,
+            nomeEixoY,
+            series, PlotOrientation.VERTICAL, true, true, true
+        );
 
         ChartPanel panel = new ChartPanel(grafico);
         JFrame frame = new JFrame();
         frame.setSize(640, 480);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(panel);
-        frame.setVisible(true);
+        frame.setVisible(true);	
+        
     }
 
     public Populacao getPopulacao() {
